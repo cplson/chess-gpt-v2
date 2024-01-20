@@ -1,0 +1,106 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+}
+
+body {
+  background-color: #260f26;
+}
+
+#chess-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  /* background-color: #101ede; */
+}
+#chess-board {
+  border-collapse: collapse;
+  margin-top: 64px;
+}
+
+tr,
+tfoot {
+  display: flex;
+  justify-content: center;
+  /* background-color: #260f26; */
+}
+tfoot {
+  /* justify-content: space-between; */
+  /* background-color: #2d2a32; */
+}
+
+td,
+th {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9vw;
+  height: 9vw;
+  /* background-color: #260f26; */
+}
+
+th {
+  /* background-color: rgba(135, 126, 150, 0.4); */
+  color: #e8e9eb;
+}
+.column-header {
+  height: 6vw;
+}
+
+.row-header {
+  width: 6vw;
+}
+
+.black-square {
+  background-color: #2d2a32;
+}
+
+.white-square {
+  background-color: #e8e9eb;
+}
+
+.piece {
+  width: 32px;
+  /* padding: auto; */
+  /* margin: 12px; */
+  /* margin: 4px; */
+}
+#new-game-button {
+  margin: 64px;
+  padding: 8px 12px;
+  background-color: #1e2ede;
+  color: #e8e9eb;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#new-game-button:active {
+  background-color: #101ede;
+}
+
+@media(min-width: 540px){
+    .piece{
+        width: 48px;
+        height: 48px;
+    }
+}
+
+@media (min-width: 820px) {
+  td,
+  th {
+    height: 72px;
+    width: 72px;
+    max-width: 72px;
+    max-height: 72px;
+  }
+
+  .piece{
+    width: 56px;
+    height: 56px;
+  }
+}
