@@ -1,11 +1,15 @@
 const MAX_LENGTH = 620;
-function setup() {}
+const SQUARES_PER_SIDE = 8;
+let pieces;
+async function setup() {
+  pieces = await getPieces();
+  console.log(pieces);
+}
 function draw() {
   drawBoard();
 }
 
 const drawBoard = () => {
-  let pieces;
   let parentElement = select("#chess-container");
   let boardSideLength = parentElement.width * 0.8;
   let squareSideLength;
@@ -21,14 +25,44 @@ const drawBoard = () => {
 
   background("#EEE");
 
-  for (let i = 0; i < squareSideLength; i++) {
-    for (let j = 0; j < squareSideLength; j++) {
+  for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+    for (let j = 0; j < SQUARES_PER_SIDE; j++) {
       let fillColor = (i + j) % 2 === 0 ? "#DDD" : "#333";
 
       fill(fillColor);
       square(squareSideLength * i, j * squareSideLength, squareSideLength);
+        
     }
   }
 };
 
-const getPieces = async () => {};
+const getPieces = async () => {
+  const response = await fetch("./gameState.json");
+  return response.json();
+};
+
+const parseSquare = (x, y) => {
+  switch (x) {
+    case 0:
+      return "a" + y;
+    case 1:
+      return "b" + y;
+    case 2:
+      return "c" + y;
+    case 3:
+      return "d" + y;
+    case 4:
+      return "e" + y;
+    case 5:
+      return "f" + y;
+    case 6:
+      return "g" + y;
+    case 7:
+      return "h" + y;
+  }
+};
+
+const renderPiece = () => {
+    let positions = {...piesces.pieces.location}
+    console.log(pieces.pieces.positions.b)
+}
