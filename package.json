@@ -4,7 +4,8 @@
   "description": "Play chess against chat-gpt and use it as a learning tool",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",

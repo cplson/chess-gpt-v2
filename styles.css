@@ -15,7 +15,6 @@ body {
   height: auto;
   display: flex;
   justify-content: center;
-  /* background-color: #101ede; */
 }
 #chess-board {
   border-collapse: collapse;
@@ -26,11 +25,6 @@ tr,
 tfoot {
   display: flex;
   justify-content: center;
-  /* background-color: #260f26; */
-}
-tfoot {
-  /* justify-content: space-between; */
-  /* background-color: #2d2a32; */
 }
 
 td,
@@ -40,11 +34,9 @@ th {
   justify-content: center;
   width: 9vw;
   height: 9vw;
-  /* background-color: #260f26; */
 }
 
 th {
-  /* background-color: rgba(135, 126, 150, 0.4); */
   color: #e8e9eb;
 }
 .column-header {
@@ -65,9 +57,6 @@ th {
 
 .piece {
   width: 32px;
-  /* padding: auto; */
-  /* margin: 12px; */
-  /* margin: 4px; */
 }
 #new-game-button {
   margin: 64px;
@@ -83,11 +72,11 @@ th {
   background-color: #101ede;
 }
 
-@media(min-width: 540px){
-    .piece{
-        width: 48px;
-        height: 48px;
-    }
+@media (min-width: 540px) {
+  .piece {
+    width: 48px;
+    height: 48px;
+  }
 }
 
 @media (min-width: 820px) {
@@ -99,7 +88,7 @@ th {
     max-height: 72px;
   }
 
-  .piece{
+  .piece {
     width: 56px;
     height: 56px;
   }
