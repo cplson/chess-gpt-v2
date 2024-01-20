@@ -5,7 +5,7 @@
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
 }
-
+/* 
 body {
   background-color: #260f26;
 }
@@ -92,4 +92,19 @@ th {
     width: 56px;
     height: 56px;
   }
+} */
+
+body {
+  width: 100%;
+}
+#chess-container {
+  width: 100%;
+  /* max-width: 620px; */
+  margin: auto;
+  height: auto;
+  margin-top: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: aquamarine; */
 }

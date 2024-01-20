@@ -9,15 +9,25 @@
       rel="stylesheet"
     />
 
+    <script src="./components/board.js" defer></script>
     <script src="./app.js" defer type="module"></script>
     <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="./node_modules/p5/lib/p5.min.js"></script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chess-GPT</title>
   </head>
   <body>
     <div id="chess-container">
-      <table id="chess-board">
+      <!-- <iframe
+        id="board-wrapper"
+        src="./components/board.js"
+        frameborder="0"
+      ><script id="chess-board" src="./components/board.js" defer></script></iframe> -->
+    </div>
+
+    <!-- <table id="chess-board">
         <thead>
           <tr>
             <th class="column-header"></th>
@@ -353,7 +363,7 @@
       </table>
     </div>
     <div>
-      <button id="new-game-button">New Game</button>
-    </div>
+      <button id="new-game-button">New Game</button>-->
+    <!-- </div> -->
   </body>
 </html>
