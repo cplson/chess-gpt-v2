@@ -1,9 +1,19 @@
 const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 let pieces;
+let positions;
 async function setup() {
   pieces = await getPieces();
-  console.log(pieces);
+  positions = [
+    ...pieces.pieces.pawn.locations,
+    ...pieces.pieces.rook.locations,
+    ...pieces.pieces.knight.locations,
+    ...pieces.pieces.bishop.locations,
+    ...pieces.pieces.queen.locations,
+    ...pieces.pieces.king.locations,
+  ];
+//   console.log(pieces.pieces.pawn);
+    console.log(positions);
 }
 function draw() {
   drawBoard();
@@ -31,9 +41,9 @@ const drawBoard = () => {
 
       fill(fillColor);
       square(squareSideLength * i, j * squareSideLength, squareSideLength);
-        
     }
   }
+  //   renderPiece();
 };
 
 const getPieces = async () => {
@@ -62,7 +72,4 @@ const parseSquare = (x, y) => {
   }
 };
 
-const renderPiece = () => {
-    let positions = {...piesces.pieces.location}
-    console.log(pieces.pieces.positions.b)
-}
+const renderPiece = () => {};

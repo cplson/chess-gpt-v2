@@ -1,18 +1,35 @@
 {
   "pieces": {
     "pawn": {
-      "locations": {
-        "black": ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
-        "white": ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"]
-      },
+      "locations": [
+        ["p", "black", "a2"],
+        ["p", "black", "b2"],
+        ["p", "black", "c2"],
+        ["p", "black", "d2"],
+        ["p", "black", "e2"],
+        ["p", "black", "f2"],
+        ["p", "black", "g2"],
+        ["p", "black", "h2"],
+        ["p", "white", "a7"],
+        ["p", "white", "b7"],
+        ["p", "white", "c7"],
+        ["p", "white", "d7"],
+        ["p", "white", "e7"],
+        ["p", "white", "f7"],
+        ["p", "white", "g7"],
+        ["p", "white", "h7"]
+      ],
+
       "moveset": [[0, 1]],
       "extender": false
     },
     "rook": {
-      "locations": {
-        "black": ["a1", "h1"],
-        "white": ["a8", "h8"]
-      },
+      "locations": [
+        ["r", "black", "a1"],
+        ["r", "black", "h1"],
+        ["r", "white", "a8"],
+        ["r", "white", "h8"]
+      ],
       "moveset": [
         [0, 1],
         [0, -1],
@@ -22,10 +39,13 @@
       "extender": true
     },
     "knight": {
-      "locations": {
-        "black": ["b1", "g1"],
-        "white": ["b8", "g8"]
-      },
+      "locations": [
+        ["n", "black", "b1"],
+        ["n", "black", "g1"],
+        ["n", "white", "b8"],
+        ["n", "white", "g8"]
+      ],
+
       "moveset": [
         [-2, 1],
         [-2, -1],
@@ -39,10 +59,13 @@
       "extender": false
     },
     "bishop": {
-      "locations": {
-        "black": ["c1", "f1"],
-        "white": ["c8", "f8"]
-      },
+      "locations": [
+        ["b", "black", "c1"],
+        ["b", "black", "f1"],
+        ["b", "white", "c8"],
+        ["b", "white", "f8"]
+      ],
+
       "moveset": [
         [1, 1],
         [1, -1],
@@ -52,10 +75,11 @@
       "extender": true
     },
     "queen": {
-      "locations": {
-        "black": ["d8"],
-        "white": ["d1"]
-      },
+      "locations": [
+        ["q", "black", "d8"],
+        ["q", "white", "d1"]
+      ],
+
       "moveset": [
         [1, 1],
         [1, -1],
@@ -69,10 +93,11 @@
       "extender": true
     },
     "king": {
-      "locations": {
-        "black": ["e8"],
-        "white": ["e1"]
-      },
+      "locations": [
+        ["k", "black", "e8"],
+        ["k", "white", "e1"]
+      ],
+
       "moveset": [
         [1, 1],
         [1, -1],
