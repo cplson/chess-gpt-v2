@@ -5,8 +5,9 @@ const port = 5000;
 // require("dotenv").config();
 
 app.use(cors());
-
+const gameStateRouter = require("./routes/gameState.router.js");
 const chatRouter = require("./routes/chat.router.js");
+app.use("/api/gameState", gameStateRouter);
 app.use("/api/chat", chatRouter);
 
 // Serve static files

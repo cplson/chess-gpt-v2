@@ -2,13 +2,10 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-let isMaxLength;
-let boardSideLength, squareSideLength;
-let pieces;
-let positions;
+let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
-
+let gameState;
 function preload() {
   // preload images
   blackPawn = loadImage("./assets/Chess_pdt45.svg");
@@ -18,7 +15,6 @@ function preload() {
   blackQueen = loadImage("./assets/Chess_qdt45.svg");
   blackKing = loadImage("./assets/Chess_kdt45.svg");
   whitePawn = loadImage("./assets/Chess_plt45.svg");
-  console.log(whitePawn);
   whiteRook = loadImage("./assets/Chess_rlt45.svg");
   whiteKnight = loadImage("./assets/Chess_nlt45.svg");
   whiteBishop = loadImage("./assets/Chess_blt45.svg");
@@ -35,14 +31,18 @@ async function setup() {
     ...pieces.pieces.queen.locations,
     ...pieces.pieces.king.locations,
   ];
-  //   console.log(pieces.pieces.pawn);
-  console.log(positions);
+  document
+    .getElementById("route-tester")
+    .addEventListener("click", async () => {
+      const status = await move();
+      console.log(status);
+    });
 }
 function draw() {
   drawBoard();
 }
 
-const drawBoard = () => {
+const drawBoard = async () => {
   let parentElement = select("#chess-container");
   let board;
   imageMode(CENTER);
@@ -70,14 +70,11 @@ const drawBoard = () => {
 
       for (let k = 0; k < STARTING_PIECE_COUNT; k++) {
         if (positions[k][2] == parseSquare(j, i + 1)) {
-          // console.log(positions[k][0])
           findPiece(positions[k][0], positions[k][1], j, i);
         }
       }
     }
-    // console.log(postitions)
   }
-  //   renderPiece();
 };
 
 const getPieces = async () => {
@@ -161,8 +158,8 @@ const renderPiece = (img, x, y) => {
   if (!isMaxLength) {
     image(
       img,
-      (x * boardSideLength) / SQUARES_PER_SIDE + squareSideLength / 2,
-      (y * boardSideLength) / SQUARES_PER_SIDE + squareSideLength / 2
+      x * squareSideLength + squareSideLength / 2,
+      y * squareSideLength + squareSideLength / 2
     );
   } else {
     image(
@@ -170,5 +167,22 @@ const renderPiece = (img, x, y) => {
       x * MAX_SIDE_LENGTH + MAX_SIDE_LENGTH / 2,
       y * MAX_SIDE_LENGTH + MAX_SIDE_LENGTH / 2
     );
+  }
+};
+
+const move = async () => {
+  try {
+    gameState = await axios
+      .post("http://localhost:5000/api/gameState", {
+        from: "a2",
+        to: "a4",
+      })
+      .then((response) => {
+        console.log(response.status);
+        return response.status;
+      });
+  } catch (err) {
+    console.log(err);
+    return err;
   }
 };
