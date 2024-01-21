@@ -76,8 +76,8 @@
     },
     "queen": {
       "locations": [
-        ["q", "black", "d8"],
-        ["q", "white", "d1"]
+        ["q", "black", "d1"],
+        ["q", "white", "d8"]
       ],
 
       "moveset": [
@@ -94,8 +94,8 @@
     },
     "king": {
       "locations": [
-        ["k", "black", "e8"],
-        ["k", "white", "e1"]
+        ["k", "black", "e1"],
+        ["k", "white", "e8"]
       ],
 
       "moveset": [
