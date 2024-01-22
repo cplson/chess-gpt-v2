@@ -1,13 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const moveset = {
-  pawn: {
+router.use(express.json());
+
+const moveset = [
+  {
     symbol: "p",
-    moveset: [0, 1],
+    moveset: [
+      [0, 1],
+      [0, 2],
+    ],
     extender: false,
   },
-  rook: {
+  {
     symbol: "r",
     moveset: [
       [0, 1],
@@ -17,7 +22,7 @@ const moveset = {
     ],
     extender: true,
   },
-  knight: {
+  {
     symbol: "n",
     moveset: [
       [-2, 1],
@@ -31,7 +36,7 @@ const moveset = {
     ],
     extender: false,
   },
-  bishop: {
+  {
     symbol: "b",
     moveset: [
       [1, 1],
@@ -41,7 +46,7 @@ const moveset = {
     ],
     extender: true,
   },
-  queen: {
+  {
     symbol: "q",
     moveset: [
       [1, 1],
@@ -55,7 +60,7 @@ const moveset = {
     ],
     extender: true,
   },
-  king: {
+  {
     symbol: "k",
     moveset: [
       [1, 1],
@@ -69,12 +74,40 @@ const moveset = {
     ],
     extender: false,
   },
-};
-router.use(express.json());
+];
 
-router.get("/", (req, res) => {
-  console.log("yay", req.body);
-  res.send("yay");
-});
+router.get(
+  "/piece/:piece/userColorWhite/:isUserWhite/x/:x/y/:y",
+  (req, res) => {
+    console.log(req.params);
+
+    moveset.forEach((element) => {
+      if (element.symbol == req.params.piece.slice(1)) {
+        res.send(
+          getMoveset(
+            element,
+            req.params.isUserWhite,
+            req.params.x,
+            req.params.y
+          )
+        );
+      }
+    });
+  }
+);
+
+const getMoveset = (piece, isUserWhite, x, y) => {
+  const thisMoveset = [];
+  if (!piece.extender) {
+    piece.moveset.forEach((element) => {
+      if (!isUserWhite === true && piece.symbol == "p") {
+        thisMoveset.push([Number(x) + element[0], Number(y) - element[1]]);
+      } else {
+        thisMoveset.push([Number(x) + element[0], Number(y) + element[1]]);
+      }
+    });
+  }
+  return thisMoveset;
+};
 
 module.exports = router;

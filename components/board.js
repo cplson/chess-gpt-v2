@@ -211,12 +211,10 @@ async function mousePressed() {
     (!userIsWhite && gameState[x][y].slice(0, 1) === "b");
 
   if (isUserPiece) {
-    const response = await axios.get("http://localhost:5000/api/moveset", {
-      piece: gameState[x][y],
-      whiteBool: userIsWhite,
-      x: x,
-      y: y,
-    });
+    console.log(userIsWhite);
+    const response = await axios.get(
+      `http://localhost:5000/api/moveset/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
+    );
     console.log(response.data);
   }
 }
