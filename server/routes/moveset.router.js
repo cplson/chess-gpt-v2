@@ -109,32 +109,11 @@ const getMoveset = (piece, isUserWhite, x, y, gameState) => {
   const thisMoveset = [];
   console.log("inside getMoveset");
   if (!piece.extender) {
-    piece.moveset.forEach((element) => {
-      if (isUserWhite === "true") {
-        if (
-          isMoveValid(
-            Number(x) + element[0],
-            Number(y) - element[1],
-            isUserWhite,
-            gameState
-          )
-        ) {
-          thisMoveset.push([Number(x) + element[0], Number(y) - element[1]]);
-        }
-      } else {
-        if (
-          isMoveValid(
-            Number(x) + element[0],
-            Number(y) + element[1],
-            isUserWhite,
-            gameState
-          )
-        ) {
-          thisMoveset.push([Number(x) + element[0], Number(y) + element[1]]);
-        }
-      }
-    });
+    nonExtenderLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
+  } else {
+    extenderLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
   }
+
   return thisMoveset;
 };
 
@@ -148,6 +127,93 @@ const isMoveValid = (x, y, isUserWhite, gameState) => {
     const MOVE_IS_VALID = !SQUARE_OCCUPIED_BY_FRIENDLY;
     return MOVE_IS_VALID;
   }
+};
+
+const nonExtenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
+  piece.moveset.forEach((element) => {
+    if (isUserWhite === "false") {
+      if (
+        isMoveValid(
+          Number(x) + element[0],
+          Number(y) - element[1],
+          isUserWhite,
+          gameState
+        )
+      ) {
+        thisMoveset.push([Number(x) + element[0], Number(y) - element[1]]);
+      }
+    } else {
+      if (
+        isMoveValid(
+          Number(x) + element[0],
+          Number(y) + element[1],
+          isUserWhite,
+          gameState
+        )
+      ) {
+        thisMoveset.push([Number(x) + element[0], Number(y) + element[1]]);
+      }
+    }
+  });
+};
+
+const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
+  console.log(piece);
+  piece.moveset.forEach((element) => {
+    // console.log(element)
+    let pathIsClear = true;
+    if (isUserWhite === "false") {
+      let i = 1;
+      while (pathIsClear) {
+        console.log("i is: ", i);
+        console.log("x: ", x, "  y: ", y);
+        console.log("pathIsClear", pathIsClear);
+        console.log(Number(x) + element[0] * i, Number(y) - element[1] * i);
+        if (
+          isMoveValid(
+            Number(x) + element[0] * i,
+            Number(y) - element[1] * i,
+            isUserWhite,
+            gameState
+          )
+        ) {
+          thisMoveset.push([
+            Number(x) + element[0] * i,
+            Number(y) - element[1] * i,
+          ]);
+          console.log("moveset[i]", thisMoveset[i - 1]);
+        } else {
+          pathIsClear = false;
+        }
+        i++;
+      }
+    } else {
+      let i = 1;
+      while (pathIsClear) {
+        console.log("i is: ", i);
+        console.log("x: ", x, "  y: ", y);
+        console.log("pathIsClear", pathIsClear);
+        console.log(Number(x) + element[0] * i, Number(y) + element[1] * i);
+        if (
+          isMoveValid(
+            Number(x) + element[0] * i,
+            Number(y) + element[1] * i,
+            isUserWhite,
+            gameState
+          )
+        ) {
+          thisMoveset.push([
+            Number(x) + element[0] * i,
+            Number(y) + element[1] * i,
+          ]);
+          console.log("moveset[i]", thisMoveset[i - 1]);
+        } else {
+          pathIsClear = false;
+        }
+        i++;
+      }
+    }
+  });
 };
 
 module.exports = router;

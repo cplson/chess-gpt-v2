@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const gameState = [
-  ["br", "bp", "e", "e", "e", "e", "wp", "wr"],
-  ["bn", "bp", "e", "e", "e", "e", "wp", "wn"],
-  ["bb", "bp", "e", "e", "e", "e", "wp", "wb"],
-  ["bq", "bp", "e", "e", "e", "e", "wp", "wq"],
-  ["bk", "bp", "e", "e", "e", "e", "wp", "wk"],
-  ["bb", "bp", "e", "e", "e", "e", "wp", "wb"],
-  ["bn", "bp", "e", "e", "e", "e", "wp", "wn"],
-  ["br", "e", "e", "bp", "e", "e", "wp", "wr"],
+  ["wr", "e", "e", "e", "wp", "e", "bp", "br"],
+  ["e", "wp", "e", "e", "e", "e", "bp", "bn"],
+  ["wb", "wp", "wn", "e", "e", "e", "bp", "bb"],
+  ["wq", "wp", "e", "e", "e", "e", "bp", "bq"],
+  ["wk", "wp", "e", "e", "e", "e", "bp", "bk"],
+  ["wb", "wp", "e", "e", "e", "e", "bp", "bb"],
+  ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
+  ["wr", "wp", "e", "e", "bp", "e", "e", "br"],
 ];
 
 router.use(express.json());
