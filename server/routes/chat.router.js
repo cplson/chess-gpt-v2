@@ -5,6 +5,7 @@ const router = express.Router();
 const openai = new OpenAI({});
 
 router.get("/", async (req, res) => {
+  console.log("chat router next");
   // const completion = await openai.chat.completions.create({
   //   messages: [{ role: "system", content: "You are a helpful assistant." }],
   //   model: "gpt-3.5-turbo",

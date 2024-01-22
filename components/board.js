@@ -2,11 +2,12 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
+let userIsWhite = true;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
 let gameState;
-function preload() {
+async function preload() {
   // preload images
   blackPawn = loadImage("./assets/Chess_pdt45.svg");
   blackRook = loadImage("./assets/Chess_rdt45.svg");
@@ -20,6 +21,8 @@ function preload() {
   whiteBishop = loadImage("./assets/Chess_blt45.svg");
   whiteQueen = loadImage("./assets/Chess_qlt45.svg");
   whiteKing = loadImage("./assets/Chess_klt45.svg");
+  let response = await axios.get("http://localhost:5000/api/gameState");
+  gameState = response.data;
 }
 async function setup() {
   pieces = await getPieces();
@@ -66,12 +69,11 @@ const drawBoard = async () => {
       let fillColor = (i + j) % 2 === 0 ? "#DDD" : "#333";
 
       fill(fillColor);
-      square(squareSideLength * j, i * squareSideLength, squareSideLength);
-
-      for (let k = 0; k < STARTING_PIECE_COUNT; k++) {
-        if (positions[k][2] == parseSquare(j, i + 1)) {
-          findPiece(positions[k][0], positions[k][1], j, i);
-        }
+      square(j * squareSideLength, i * squareSideLength, squareSideLength);
+      text(j, j * squareSideLength, i * squareSideLength);
+      if (gameState[j][i] != "e") {
+        highlightOnHover(j, i);
+        findPiece(gameState[j][i].slice(0, 1), gameState[j][i].slice(1), j, i);
       }
     }
   }
@@ -82,31 +84,9 @@ const getPieces = async () => {
   return response.json();
 };
 
-// takes in the x, y positions on the chessboard and
-// converts the x to it's letter equivalent on the board
-const parseSquare = (x, y) => {
-  switch (x) {
-    case 0:
-      return "a" + y;
-    case 1:
-      return "b" + y;
-    case 2:
-      return "c" + y;
-    case 3:
-      return "d" + y;
-    case 4:
-      return "e" + y;
-    case 5:
-      return "f" + y;
-    case 6:
-      return "g" + y;
-    case 7:
-      return "h" + y;
-  }
-};
-
-const findPiece = (role, color, x, y) => {
-  if (color === "white") {
+const findPiece = (color, role, x, y) => {
+  // console.log(color, role, x, y)
+  if (color === "w") {
     switch (role) {
       case "p":
         renderPiece(whitePawn, x, y);
@@ -178,11 +158,63 @@ const move = async () => {
         to: "a4",
       })
       .then((response) => {
-        console.log(response.status);
-        return response.status;
+        // console.log(response);
+        return response;
       });
   } catch (err) {
     console.log(err);
     return err;
+  }
+};
+
+const highlightOnHover = (x, y) => {
+  const SQUARE_X_START = x * squareSideLength;
+  const SQUARE_X_END = x * squareSideLength + squareSideLength;
+  const SQUARE_Y_START = y * squareSideLength;
+  const SQUARE_Y_END = y * squareSideLength + squareSideLength;
+  if (
+    mouseX > SQUARE_X_START &&
+    mouseX < SQUARE_X_END &&
+    mouseY > SQUARE_Y_START &&
+    mouseY < SQUARE_Y_END
+  ) {
+    // console.log("inside highlight function");
+    fill("#8888FF");
+    square(SQUARE_X_START, SQUARE_Y_START, squareSideLength);
+    // console.log(x, y);
+  }
+};
+
+/*
+if mouse is pressed on a tile with a players piece present (need userIsWhite)
+    if another piece is already highlighted (save square and available moves)
+        remove previous piece, and cache it and its available moves
+
+if mouse is pressed on a pieces available move 
+    update gameState 
+    render the move
+    prompt the chat and await their move
+
+*/
+// takes in the x, y positions on the chessboard and
+// converts the x to it's letter equivalent on the board
+const parseSquare = (x, y) => {
+  switch (x) {
+    case 0:
+      return "a" + y;
+    case 1:
+      return "b" + y;
+    case 2:
+      return "c" + y;
+    case 3:
+      return "d" + y;
+    case 4:
+      return "e" + y;
+    case 5:
+      return "f" + y;
+    case 6:
+      return "g" + y;
+    case 7:
+      return "h" + y;
   }
 };
