@@ -2,7 +2,8 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-let userIsWhite = false;
+const userIsWhite = false;
+let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
@@ -50,6 +51,7 @@ function draw() {
 const drawBoard = async () => {
   let parentElement = select("#chess-container");
   let board;
+
   imageMode(CENTER);
   boardSideLength = parentElement.width * 0.8;
   squareSideLength = boardSideLength / SQUARES_PER_SIDE;
@@ -72,7 +74,6 @@ const drawBoard = async () => {
 
       fill(fillColor);
       square(j * squareSideLength, i * squareSideLength, squareSideLength);
-      text(j, j * squareSideLength, i * squareSideLength);
       if (gameState[j][i] != "e") {
         highlightOnHover(j, i);
         highlightOnClick(j, i);
@@ -203,6 +204,21 @@ const highlightOnClick = (x, y) => {
 async function mousePressed() {
   pressedX = mouseX;
   pressedY = mouseY;
+  let x = floor(pressedX / squareSideLength);
+  let y = floor(pressedY / squareSideLength);
+  isUserPiece =
+    (userIsWhite && gameState[x][y].slice(0, 1) === "w") ||
+    (!userIsWhite && gameState[x][y].slice(0, 1) === "b");
+
+  if (isUserPiece) {
+    const response = await axios.get("http://localhost:5000/api/moveset", {
+      piece: gameState[x][y],
+      whiteBool: userIsWhite,
+      x: x,
+      y: y,
+    });
+    console.log(response.data);
+  }
 }
 
 /*
