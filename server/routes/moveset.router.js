@@ -181,6 +181,13 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
             Number(x) + element[0] * i,
             Number(y) - element[1] * i,
           ]);
+          if (
+            gameState[Number(x) + element[0] * i][
+              Number(y) - element[1] * i
+            ].slice(0, 1) === "w"
+          ) {
+            pathIsClear = false;
+          }
           console.log("moveset[i]", thisMoveset[i - 1]);
         } else {
           pathIsClear = false;
@@ -206,6 +213,14 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
             Number(x) + element[0] * i,
             Number(y) + element[1] * i,
           ]);
+          if (
+            gameState[Number(x) + element[0] * i][
+              Number(y) + element[1] * i
+            ].slice(0, 1) === "b"
+          ) {
+            pathIsClear = false;
+          }
+
           console.log("moveset[i]", thisMoveset[i - 1]);
         } else {
           pathIsClear = false;
