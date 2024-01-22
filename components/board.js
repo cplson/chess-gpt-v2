@@ -2,11 +2,13 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-let userIsWhite = true;
+let userIsWhite = false;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
 let gameState;
+let pressedX, pressedY;
+const cachedPieceMoves = [];
 async function preload() {
   // preload images
   blackPawn = loadImage("./assets/Chess_pdt45.svg");
@@ -73,6 +75,7 @@ const drawBoard = async () => {
       text(j, j * squareSideLength, i * squareSideLength);
       if (gameState[j][i] != "e") {
         highlightOnHover(j, i);
+        highlightOnClick(j, i);
         findPiece(gameState[j][i].slice(0, 1), gameState[j][i].slice(1), j, i);
       }
     }
@@ -85,7 +88,6 @@ const getPieces = async () => {
 };
 
 const findPiece = (color, role, x, y) => {
-  // console.log(color, role, x, y)
   if (color === "w") {
     switch (role) {
       case "p":
@@ -134,20 +136,11 @@ const findPiece = (color, role, x, y) => {
 const renderPiece = (img, x, y) => {
   img.width = squareSideLength * 0.9;
   img.height = squareSideLength * 0.9;
-
-  if (!isMaxLength) {
-    image(
-      img,
-      x * squareSideLength + squareSideLength / 2,
-      y * squareSideLength + squareSideLength / 2
-    );
-  } else {
-    image(
-      img,
-      x * MAX_SIDE_LENGTH + MAX_SIDE_LENGTH / 2,
-      y * MAX_SIDE_LENGTH + MAX_SIDE_LENGTH / 2
-    );
-  }
+  image(
+    img,
+    x * squareSideLength + squareSideLength / 2,
+    y * squareSideLength + squareSideLength / 2
+  );
 };
 
 const move = async () => {
@@ -184,6 +177,33 @@ const highlightOnHover = (x, y) => {
     // console.log(x, y);
   }
 };
+
+const highlightOnClick = (x, y) => {
+  const SQUARE_CLICKED =
+    pressedX > x * squareSideLength &&
+    pressedX < x * squareSideLength + squareSideLength &&
+    pressedY > y * squareSideLength &&
+    pressedY < y * squareSideLength + squareSideLength;
+  //   console.log(pressedX, x, x + SQUARE_CLICKED, pressedY, y, y + SQUARE_CLICKED);
+  //   push();
+
+  if (SQUARE_CLICKED) {
+    if (
+      (userIsWhite && gameState[x][y].slice(0, 1) === "w") ||
+      (!userIsWhite && gameState[x][y].slice(0, 1) === "b")
+    ) {
+      push();
+      fill("#8822ff");
+      square(x * squareSideLength, y * squareSideLength, squareSideLength);
+      pop();
+    }
+  }
+};
+
+async function mousePressed() {
+  pressedX = mouseX;
+  pressedY = mouseY;
+}
 
 /*
 if mouse is pressed on a tile with a players piece present (need userIsWhite)
