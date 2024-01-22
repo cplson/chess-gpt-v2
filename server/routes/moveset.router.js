@@ -77,9 +77,17 @@ const moveset = [
 ];
 
 router.get(
-  "/piece/:piece/userColorWhite/:isUserWhite/x/:x/y/:y",
+  "/gameState/:gameState/piece/:piece/userColorWhite/:isUserWhite/x/:x/y/:y",
   (req, res) => {
-    console.log(req.params);
+    const SQUARES_PER_SIDE = 8;
+    const gameState = String(req.params.gameState).split(",");
+    const gameStateTwoD = [];
+
+    for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+      // gameStateTwoD[].push(gameState);
+      const row = gameState.slice(i * 8, (i + 1) * 8);
+      gameStateTwoD.push(row);
+    }
 
     moveset.forEach((element) => {
       if (element.symbol == req.params.piece.slice(1)) {
@@ -88,7 +96,8 @@ router.get(
             element,
             req.params.isUserWhite,
             req.params.x,
-            req.params.y
+            req.params.y,
+            gameStateTwoD
           )
         );
       }
@@ -96,18 +105,49 @@ router.get(
   }
 );
 
-const getMoveset = (piece, isUserWhite, x, y) => {
+const getMoveset = (piece, isUserWhite, x, y, gameState) => {
   const thisMoveset = [];
+  console.log("inside getMoveset");
   if (!piece.extender) {
     piece.moveset.forEach((element) => {
-      if (!isUserWhite === true && piece.symbol == "p") {
-        thisMoveset.push([Number(x) + element[0], Number(y) - element[1]]);
+      if (isUserWhite === "true") {
+        if (
+          isMoveValid(
+            Number(x) + element[0],
+            Number(y) - element[1],
+            isUserWhite,
+            gameState
+          )
+        ) {
+          thisMoveset.push([Number(x) + element[0], Number(y) - element[1]]);
+        }
       } else {
-        thisMoveset.push([Number(x) + element[0], Number(y) + element[1]]);
+        if (
+          isMoveValid(
+            Number(x) + element[0],
+            Number(y) + element[1],
+            isUserWhite,
+            gameState
+          )
+        ) {
+          thisMoveset.push([Number(x) + element[0], Number(y) + element[1]]);
+        }
       }
     });
   }
   return thisMoveset;
+};
+
+const isMoveValid = (x, y, isUserWhite, gameState) => {
+  const IS_ON_BOARD = x >= 0 && x < 8 && y >= 0 && y < 8;
+  if (IS_ON_BOARD) {
+    const OCCUPIED_PIECE_COLOR = gameState[x][y].slice(0, 1);
+    const SQUARE_OCCUPIED_BY_FRIENDLY =
+      (isUserWhite === "true" && OCCUPIED_PIECE_COLOR === "w") ||
+      (isUserWhite === "false" && OCCUPIED_PIECE_COLOR === "b");
+    const MOVE_IS_VALID = !SQUARE_OCCUPIED_BY_FRIENDLY;
+    return MOVE_IS_VALID;
+  }
 };
 
 module.exports = router;

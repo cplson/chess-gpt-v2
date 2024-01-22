@@ -8,7 +8,7 @@ const gameState = [
   ["bk", "bp", "e", "e", "e", "e", "wp", "wk"],
   ["bb", "bp", "e", "e", "e", "e", "wp", "wb"],
   ["bn", "bp", "e", "e", "e", "e", "wp", "wn"],
-  ["br", "bp", "e", "e", "e", "e", "wp", "wr"],
+  ["br", "e", "e", "bp", "e", "e", "wp", "wr"],
 ];
 
 router.use(express.json());

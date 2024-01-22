@@ -12,18 +12,18 @@ let pressedX, pressedY;
 const cachedPieceMoves = [];
 async function preload() {
   // preload images
-  blackPawn = loadImage("./assets/Chess_pdt45.svg");
-  blackRook = loadImage("./assets/Chess_rdt45.svg");
-  blackKnight = loadImage("./assets/Chess_ndt45.svg");
-  blackBishop = loadImage("./assets/Chess_bdt45.svg");
-  blackQueen = loadImage("./assets/Chess_qdt45.svg");
-  blackKing = loadImage("./assets/Chess_kdt45.svg");
-  whitePawn = loadImage("./assets/Chess_plt45.svg");
-  whiteRook = loadImage("./assets/Chess_rlt45.svg");
-  whiteKnight = loadImage("./assets/Chess_nlt45.svg");
-  whiteBishop = loadImage("./assets/Chess_blt45.svg");
-  whiteQueen = loadImage("./assets/Chess_qlt45.svg");
-  whiteKing = loadImage("./assets/Chess_klt45.svg");
+  blackPawn = await loadImage("./assets/Chess_pdt45.svg");
+  blackRook = await loadImage("./assets/Chess_rdt45.svg");
+  blackKnight = await loadImage("./assets/Chess_ndt45.svg");
+  blackBishop = await loadImage("./assets/Chess_bdt45.svg");
+  blackQueen = await loadImage("./assets/Chess_qdt45.svg");
+  blackKing = await loadImage("./assets/Chess_kdt45.svg");
+  whitePawn = await loadImage("./assets/Chess_plt45.svg");
+  whiteRook = await loadImage("./assets/Chess_rlt45.svg");
+  whiteKnight = await loadImage("./assets/Chess_nlt45.svg");
+  whiteBishop = await loadImage("./assets/Chess_blt45.svg");
+  whiteQueen = await loadImage("./assets/Chess_qlt45.svg");
+  whiteKing = await loadImage("./assets/Chess_klt45.svg");
   let response = await axios.get("http://localhost:5000/api/gameState");
   gameState = response.data;
 }
@@ -204,18 +204,24 @@ const highlightOnClick = (x, y) => {
 async function mousePressed() {
   pressedX = mouseX;
   pressedY = mouseY;
-  let x = floor(pressedX / squareSideLength);
-  let y = floor(pressedY / squareSideLength);
-  isUserPiece =
-    (userIsWhite && gameState[x][y].slice(0, 1) === "w") ||
-    (!userIsWhite && gameState[x][y].slice(0, 1) === "b");
+  if (
+    pressedX > 0 &&
+    pressedX < boardSideLength &&
+    pressedY > 0 &&
+    pressedY < boardSideLength
+  ) {
+    let x = floor(pressedX / squareSideLength);
+    let y = floor(pressedY / squareSideLength);
+    isUserPiece =
+      (userIsWhite && gameState[x][y].slice(0, 1) === "w") ||
+      (!userIsWhite && gameState[x][y].slice(0, 1) === "b");
 
-  if (isUserPiece) {
-    console.log(userIsWhite);
-    const response = await axios.get(
-      `http://localhost:5000/api/moveset/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
-    );
-    console.log(response.data);
+    if (isUserPiece) {
+      const response = await axios.get(
+        `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
+      );
+      console.log(response.data);
+    }
   }
 }
 
