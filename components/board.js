@@ -2,13 +2,14 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-const userIsWhite = false;
+const userIsWhite = true;
 let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
 let gameState;
 let pressedX, pressedY;
+let selectedPiece;
 const cachedPieceMoves = [];
 async function preload() {
   // preload images
@@ -77,6 +78,7 @@ const drawBoard = async () => {
       if (gameState[j][i] != "e") {
         highlightOnHover(j, i);
         highlightOnClick(j, i);
+        highlightMoveset(selectedPiece);
         findPiece(gameState[j][i].slice(0, 1), gameState[j][i].slice(1), j, i);
       }
     }
@@ -173,7 +175,7 @@ const highlightOnHover = (x, y) => {
     mouseY < SQUARE_Y_END
   ) {
     // console.log("inside highlight function");
-    fill("#8888FF");
+    fill("#58A4B0");
     square(SQUARE_X_START, SQUARE_Y_START, squareSideLength);
     // console.log(x, y);
   }
@@ -194,7 +196,11 @@ const highlightOnClick = (x, y) => {
       (!userIsWhite && gameState[x][y].slice(0, 1) === "b")
     ) {
       push();
-      fill("#2B2118");
+      if (userIsWhite) {
+        fill("#2B2118");
+      } else {
+        fill("#B3B6B7");
+      }
       square(x * squareSideLength, y * squareSideLength, squareSideLength);
       pop();
     }
@@ -202,37 +208,60 @@ const highlightOnClick = (x, y) => {
 };
 
 async function mousePressed() {
-  pressedX = mouseX;
-  pressedY = mouseY;
+  console.log(boardSideLength);
   if (
-    pressedX > 0 &&
-    pressedX < boardSideLength &&
-    pressedY > 0 &&
-    pressedY < boardSideLength
+    mouseX > 0 &&
+    mouseX < squareSideLength * SQUARES_PER_SIDE &&
+    mouseY > 0 &&
+    mouseY < squareSideLength * SQUARES_PER_SIDE
   ) {
-    let x = floor(pressedX / squareSideLength);
-    let y = floor(pressedY / squareSideLength);
     isUserPiece =
-      (userIsWhite && gameState[x][y].slice(0, 1) === "w") ||
-      (!userIsWhite && gameState[x][y].slice(0, 1) === "b");
+      (userIsWhite &&
+        gameState[floor(mouseX / squareSideLength)][
+          floor(mouseY / squareSideLength)
+        ].slice(0, 1) === "w") ||
+      (!userIsWhite &&
+        gameState[floor(mouseX / squareSideLength)][
+          floor(mouseY / squareSideLength)
+        ].slice(0, 1) === "b");
 
     if (isUserPiece) {
+      pressedX = mouseX;
+      pressedY = mouseY;
+      let x = floor(pressedX / squareSideLength);
+      let y = floor(pressedY / squareSideLength);
+
       let pieceIsCashed = false;
       cachedPieceMoves.forEach((element, pieceIsCached) => {
         if (element.x === x && element.y === y) {
           console.log(`${element} is cached`);
           pieceIsCached == true;
+          selectedPiece = element;
         }
       });
       if (pieceIsCashed === false) {
         const response = await axios.get(
           `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
         );
-        cachedPieceMoves.push({ x: x, y: y, moveset: response.data });
+        cachedPieceMoves.push(response.data);
+        selectedPiece = response.data;
       }
     }
   }
 }
+
+const highlightMoveset = (piece) => {
+  if (piece) {
+    piece.forEach((element) => {
+      fill("#58A4B0");
+      square(
+        element[0] * squareSideLength,
+        element[1] * squareSideLength,
+        squareSideLength
+      );
+    });
+  }
+};
 
 /*
 if mouse is pressed on a tile with a players piece present (need userIsWhite)
