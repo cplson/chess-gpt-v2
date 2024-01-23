@@ -146,16 +146,19 @@ const renderPiece = (img, x, y) => {
   );
 };
 
-const move = async () => {
+const move = async (currentX, currentY, toX, toY) => {
+  console.log("inside move");
   try {
-    gameState = await axios
+    await axios
       .post("http://localhost:5000/api/gameState", {
-        from: "a2",
-        to: "a4",
+        currentX: currentX,
+        currentY: currentY,
+        toX: toX,
+        toY: toY,
       })
-      .then((response) => {
-        // console.log(response);
-        return response;
+      .then(async (response) => {
+        res = await axios.get("http://localhost:5000/api/gameState");
+        gameState = res.data;
       });
   } catch (err) {
     console.log(err);
@@ -208,7 +211,6 @@ const highlightOnClick = (x, y) => {
 };
 
 async function mousePressed() {
-  console.log(boardSideLength);
   if (
     mouseX > 0 &&
     mouseX < squareSideLength * SQUARES_PER_SIDE &&
@@ -225,16 +227,33 @@ async function mousePressed() {
           floor(mouseY / squareSideLength)
         ].slice(0, 1) === "b");
 
+    if (selectedPiece != undefined && !isUserPiece) {
+      console.log(
+        "inside move trigger",
+        floor(mouseX / squareSideLength),
+        floor(mouseY / squareSideLength)
+      );
+      let x = floor(mouseX / squareSideLength);
+      let y = floor(mouseY / squareSideLength);
+      selectedPiece.moveset.forEach((element) => {
+        console.log("moveset element: ", element);
+        if (element[0] == x && element[1] == y) {
+          move(selectedPiece.x, selectedPiece.y, element[0], element[1]);
+        }
+      });
+    }
+
     if (isUserPiece) {
       pressedX = mouseX;
       pressedY = mouseY;
       let x = floor(pressedX / squareSideLength);
       let y = floor(pressedY / squareSideLength);
 
+      console.log(selectedPiece);
+
       let pieceIsCashed = false;
       cachedPieceMoves.forEach((element, pieceIsCached) => {
         if (element.x === x && element.y === y) {
-          console.log(`${element} is cached`);
           pieceIsCached == true;
           selectedPiece = element;
         }
@@ -243,8 +262,8 @@ async function mousePressed() {
         const response = await axios.get(
           `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
         );
-        cachedPieceMoves.push(response.data);
-        selectedPiece = response.data;
+        cachedPieceMoves.push({ x: x, y: y, moveset: response.data });
+        selectedPiece = { x: x, y: y, moveset: response.data };
       }
     }
   }
@@ -252,7 +271,7 @@ async function mousePressed() {
 
 const highlightMoveset = (piece) => {
   if (piece) {
-    piece.forEach((element) => {
+    piece.moveset.forEach((element) => {
       fill("#58A4B0");
       square(
         element[0] * squareSideLength,

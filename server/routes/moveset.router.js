@@ -107,7 +107,7 @@ router.get(
 
 const getMoveset = (piece, isUserWhite, x, y, gameState) => {
   const thisMoveset = [];
-  console.log("inside getMoveset");
+  // console.log("inside getMoveset");
   if (!piece.extender) {
     nonExtenderLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
   } else {
@@ -158,17 +158,17 @@ const nonExtenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
 };
 
 const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
-  console.log(piece);
+  // console.log(piece);
   piece.moveset.forEach((element) => {
     // console.log(element)
     let pathIsClear = true;
     if (isUserWhite === "false") {
       let i = 1;
       while (pathIsClear) {
-        console.log("i is: ", i);
-        console.log("x: ", x, "  y: ", y);
-        console.log("pathIsClear", pathIsClear);
-        console.log(Number(x) + element[0] * i, Number(y) - element[1] * i);
+        // console.log("i is: ", i);
+        // console.log("x: ", x, "  y: ", y);
+        // console.log("pathIsClear", pathIsClear);
+        // console.log(Number(x) + element[0] * i, Number(y) - element[1] * i);
         if (
           isMoveValid(
             Number(x) + element[0] * i,
@@ -188,7 +188,7 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
           ) {
             pathIsClear = false;
           }
-          console.log("moveset[i]", thisMoveset[i - 1]);
+          // console.log("moveset[i]", thisMoveset[i - 1]);
         } else {
           pathIsClear = false;
         }
@@ -197,10 +197,10 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
     } else {
       let i = 1;
       while (pathIsClear) {
-        console.log("i is: ", i);
-        console.log("x: ", x, "  y: ", y);
-        console.log("pathIsClear", pathIsClear);
-        console.log(Number(x) + element[0] * i, Number(y) + element[1] * i);
+        // console.log("i is: ", i);
+        // console.log("x: ", x, "  y: ", y);
+        // console.log("pathIsClear", pathIsClear);
+        // console.log(Number(x) + element[0] * i, Number(y) + element[1] * i);
         if (
           isMoveValid(
             Number(x) + element[0] * i,
@@ -221,7 +221,7 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
             pathIsClear = false;
           }
 
-          console.log("moveset[i]", thisMoveset[i - 1]);
+          // console.log("moveset[i]", thisMoveset[i - 1]);
         } else {
           pathIsClear = false;
         }

@@ -14,8 +14,9 @@ const gameState = [
 router.use(express.json());
 
 router.post("/", (req, res) => {
-  const move = req.body;
-  console.log(move);
+  console.log("req.body: ", req.body);
+  const selectedPiece = [req.body.currentX, req.body.currentY];
+  console.log("selectedPiece: ", selectedPiece);
 });
 
 router.get("/", (req, res) => {
