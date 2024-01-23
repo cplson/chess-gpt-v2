@@ -9,8 +9,8 @@ let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
 let gameState;
 let pressedX, pressedY;
-let selectedPiece;
-const cachedPieceMoves = [];
+let selectedPiece = {};
+let cachedPieceMoves = [];
 async function preload() {
   // preload images
   blackPawn = await loadImage("./assets/Chess_pdt45.svg");
@@ -158,6 +158,8 @@ const move = async (currentX, currentY, toX, toY) => {
       })
       .then(async (response) => {
         res = await axios.get("http://localhost:5000/api/gameState");
+        selectedPiece = {};
+        cachedPieceMoves = [];
         gameState = res.data;
       });
   } catch (err) {
@@ -270,7 +272,7 @@ async function mousePressed() {
 }
 
 const highlightMoveset = (piece) => {
-  if (piece) {
+  if (Object.keys(piece).length != 0) {
     piece.moveset.forEach((element) => {
       fill("#58A4B0");
       square(
