@@ -70,7 +70,7 @@ const drawBoard = async () => {
   let k = 0;
   for (let i = 0; i < SQUARES_PER_SIDE; i++) {
     for (let j = 0; j < SQUARES_PER_SIDE; j++) {
-      let fillColor = (i + j) % 2 === 0 ? "#DDD" : "#333";
+      let fillColor = (i + j) % 2 === 0 ? "#F7F3E3" : "#AF9164";
 
       fill(fillColor);
       square(j * squareSideLength, i * squareSideLength, squareSideLength);
@@ -194,7 +194,7 @@ const highlightOnClick = (x, y) => {
       (!userIsWhite && gameState[x][y].slice(0, 1) === "b")
     ) {
       push();
-      fill("#8822ff");
+      fill("#2B2118");
       square(x * squareSideLength, y * squareSideLength, squareSideLength);
       pop();
     }
@@ -217,10 +217,19 @@ async function mousePressed() {
       (!userIsWhite && gameState[x][y].slice(0, 1) === "b");
 
     if (isUserPiece) {
-      const response = await axios.get(
-        `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
-      );
-      console.log(response.data);
+      let pieceIsCashed = false;
+      cachedPieceMoves.forEach((element, pieceIsCached) => {
+        if (element.x === x && element.y === y) {
+          console.log(`${element} is cached`);
+          pieceIsCached == true;
+        }
+      });
+      if (pieceIsCashed === false) {
+        const response = await axios.get(
+          `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
+        );
+        cachedPieceMoves.push({ x: x, y: y, moveset: response.data });
+      }
     }
   }
 }
@@ -230,6 +239,7 @@ if mouse is pressed on a tile with a players piece present (need userIsWhite)
     if another piece is already highlighted (save square and available moves)
         remove previous piece, and cache it and its available moves
 
+        
 if mouse is pressed on a pieces available move 
     update gameState 
     render the move
