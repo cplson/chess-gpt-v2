@@ -49,7 +49,7 @@ function draw() {
   drawBoard();
 }
 
-const drawBoard = async () => {
+const drawBoard = () => {
   let parentElement = select("#chess-container");
   let board;
 
@@ -74,11 +74,23 @@ const drawBoard = async () => {
       let fillColor = (i + j) % 2 === 0 ? "#F7F3E3" : "#AF9164";
 
       fill(fillColor);
-      square(j * squareSideLength, i * squareSideLength, squareSideLength);
+
+      // Checks to highlight the selected piece's moveset
+      if (
+        Object.keys(selectedPiece).length != 0 &&
+        selectedPiece.moveset.find((square) => square[0] == j && square[1] == i)
+      ) {
+        push();
+        fill("#58A4B0");
+        square(j * squareSideLength, i * squareSideLength, squareSideLength);
+        pop();
+      } else {
+        square(j * squareSideLength, i * squareSideLength, squareSideLength);
+      }
       if (gameState[j][i] != "e") {
         highlightOnHover(j, i);
         highlightOnClick(j, i);
-        highlightMoveset(selectedPiece);
+        // highlightMoveset(selectedPiece);
         findPiece(gameState[j][i].slice(0, 1), gameState[j][i].slice(1), j, i);
       }
     }
@@ -211,6 +223,7 @@ const highlightOnClick = (x, y) => {
         fill("#B3B6B7");
       }
       square(x * squareSideLength, y * squareSideLength, squareSideLength);
+
       pop();
     }
   }
@@ -282,18 +295,22 @@ async function mousePressed() {
   }
 }
 
-const highlightMoveset = (piece) => {
-  if (Object.keys(piece).length != 0) {
-    piece.moveset.forEach((element) => {
-      fill("#58A4B0");
-      square(
-        element[0] * squareSideLength,
-        element[1] * squareSideLength,
-        squareSideLength
-      );
-    });
-  }
-};
+// const highlightMoveset = (piece) => {
+//   if (Object.keys(selectedPiece).length != 0) {
+//     piece.moveset.forEach((element) => {
+//       push();
+//       stroke("#58A4B0");
+//       strokeWeight(4);
+
+//       square(
+//         element[0] * squareSideLength + 1,
+//         element[1] * squareSideLength + 1,
+//         squareSideLength - 2
+//       );
+//       pop();
+//     });
+//   }
+// };
 
 /*
 if mouse is pressed on a tile with a players piece present (need userIsWhite)
