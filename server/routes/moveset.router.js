@@ -97,7 +97,12 @@ router.get(
           Number(req.params.y),
           gameStateTwoD
         );
-        console.log("aggressorMoveset is: ", aggressorMoveset);
+        const IS_CHECK = check(
+          aggressorMoveset,
+          req.params.isUserWhite,
+          gameStateTwoD
+        );
+        console.log("IS_CHECK is: ", IS_CHECK);
       }
     });
 
@@ -133,6 +138,23 @@ router.get(
     });
   }
 );
+
+const check = (moveset, isUserWhite, gameState) => {
+  let check = false;
+  if (isUserWhite) {
+    moveset.forEach((element) => {
+      console.log("moveset element is: ", element);
+      console.log(
+        `gameState[${element[0]}][${element[1]}] is: `,
+        gameState[element[0]][element[1]]
+      );
+      if (gameState[element[0]][element[1]] == "bk") {
+        check = true;
+      }
+    });
+    return check;
+  }
+};
 
 const getMoveset = (piece, isUserWhite, x, y, gameState) => {
   const thisMoveset = [];

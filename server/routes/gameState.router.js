@@ -1,15 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const gameState = [
-  ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
-  ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
-  ["wb", "e", "e", "e", "wp", "e", "bp", "bb"],
-  ["wq", "wp", "e", "e", "e", "e", "bp", "bq"],
-  ["wk", "wp", "e", "e", "e", "e", "bp", "bk"],
-  ["wb", "e", "e", "wp", "e", "e", "bp", "bb"],
-  ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
-  ["wr", "e", "e", "e", "e", "wp", "bp", "br"],
-];
+const gameState =
+  // [
+  //   ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
+  //   ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
+  //   ["wb", "wp", "e", "e", "e", "e", "bp", "bb"],
+  //   ["wq", "wp", "e", "e", "e", "e", "bp", "bq"],
+  //   ["wk", "wp", "e", "e", "e", "e", "bp", "bk"],
+  //   ["wb", "wp", "e", "e", "e", "e", "bp", "bb"],
+  //   ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
+  //   ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
+  // ];
+
+  [
+    ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
+    ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
+    ["wb", "wp", "e", "e", "e", "e", "e", "bb"],
+    ["e", "wp", "e", "e", "wq", "e", "e", "bq"],
+    ["wk", "wp", "e", "e", "e", "e", "e", "bk"],
+    ["wb", "wp", "e", "e", "e", "e", "e", "bb"],
+    ["wn", "wp", "e", "e", "e", "e", "e", "bn"],
+    ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
+  ];
 
 router.use(express.json());
 
