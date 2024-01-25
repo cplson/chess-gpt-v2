@@ -229,7 +229,7 @@ async function mousePressed() {
           floor(mouseY / squareSideLength)
         ].slice(0, 1) === "b");
 
-    if (selectedPiece != undefined && !isUserPiece) {
+    if (Object.keys(selectedPiece).length != 0 && !isUserPiece) {
       console.log(
         "inside move trigger",
         floor(mouseX / squareSideLength),

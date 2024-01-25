@@ -6,11 +6,8 @@ router.use(express.json());
 const moveset = [
   {
     symbol: "p",
-    moveset: [
-      [0, 1],
-      [0, 2],
-    ],
-    extender: false,
+    moveset: [[0, 1]],
+    moveType: "pawn",
   },
   {
     symbol: "r",
@@ -20,7 +17,7 @@ const moveset = [
       [-1, 0],
       [1, 0],
     ],
-    extender: true,
+    moveType: "extender",
   },
   {
     symbol: "n",
@@ -34,7 +31,7 @@ const moveset = [
       [1, -2],
       [-1, -2],
     ],
-    extender: false,
+    moveType: "non-extender",
   },
   {
     symbol: "b",
@@ -44,7 +41,7 @@ const moveset = [
       [-1, 1],
       [-1, -1],
     ],
-    extender: true,
+    moveType: "extender",
   },
   {
     symbol: "q",
@@ -58,7 +55,7 @@ const moveset = [
       [-1, 0],
       [1, 0],
     ],
-    extender: true,
+    moveType: "extender",
   },
   {
     symbol: "k",
@@ -72,7 +69,7 @@ const moveset = [
       [-1, 0],
       [1, 0],
     ],
-    extender: false,
+    moveType: "non-extender",
   },
 ];
 
@@ -95,8 +92,8 @@ router.get(
           getMoveset(
             element,
             req.params.isUserWhite,
-            req.params.x,
-            req.params.y,
+            Number(req.params.x),
+            Number(req.params.y),
             gameStateTwoD
           )
         );
@@ -108,13 +105,102 @@ router.get(
 const getMoveset = (piece, isUserWhite, x, y, gameState) => {
   const thisMoveset = [];
   // console.log("inside getMoveset");
-  if (!piece.extender) {
-    nonExtenderLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
-  } else {
+  if (piece.moveType == "non-extender") {
+    nonextenderLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
+  } else if (piece.moveType == "extender") {
     extenderLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
+  } else {
+    pawnLogic(piece, isUserWhite, x, y, gameState, thisMoveset);
   }
 
   return thisMoveset;
+};
+
+const isPawnMoveValid = (
+  x,
+  y,
+  isUserWhite,
+  gameState,
+  IN_POSITION_TO_TAKE = false,
+  thisMoveset
+) => {
+  const IS_ON_BOARD = x >= 0 && x < 8 && y >= 0 && y < 8;
+  console.log(IN_POSITION_TO_TAKE);
+  if (IS_ON_BOARD) {
+    const OCCUPIED_PIECE_COLOR = gameState[x][y].slice(0, 1);
+
+    if (IN_POSITION_TO_TAKE) {
+      checkForTakes(x, y, gameState, thisMoveset, isUserWhite);
+    }
+    const SQUARE_OCCUPIED_BY_OPPONENT =
+      (isUserWhite === "true" && OCCUPIED_PIECE_COLOR === "b") ||
+      (isUserWhite === "false" && OCCUPIED_PIECE_COLOR === "w");
+    const MOVE_IS_VALID = !SQUARE_OCCUPIED_BY_OPPONENT;
+    return MOVE_IS_VALID;
+  }
+};
+
+const checkForTakes = (x, y, gameState, thisMoveset, isUserWhite) => {
+  const OCCUPIED_LEFT_PIECE_COLOR =
+    x > 0 ? gameState[x - 1][y].slice(0, 1) : false;
+  const OCCUPIED_RIGHT_PIECE_COLOR =
+    x < 7 ? gameState[x + 1][y].slice(0, 1) : false;
+  console.log("check for takes");
+  const LEFT_SQUARE_OCCUPIED_BY_OPPONENT =
+    (isUserWhite === "true" && OCCUPIED_LEFT_PIECE_COLOR === "b") ||
+    (isUserWhite === "false" && OCCUPIED_LEFT_PIECE_COLOR === "w");
+  if (LEFT_SQUARE_OCCUPIED_BY_OPPONENT) {
+    thisMoveset.push([x - 1, y]);
+  }
+
+  const RIGHT_SQUARE_OCCUPIED_BY_OPPONENT =
+    (isUserWhite === "true" && OCCUPIED_RIGHT_PIECE_COLOR === "b") ||
+    (isUserWhite === "false" && OCCUPIED_RIGHT_PIECE_COLOR === "w");
+  if (RIGHT_SQUARE_OCCUPIED_BY_OPPONENT) {
+    thisMoveset.push([x + 1, y]);
+  }
+};
+
+const pawnLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
+  const WHITE_PAWN_HOME_ROW = 1;
+  const BLACK_PAWN_HOME_ROW = 6;
+  const IN_POSITION_TO_TAKE = true;
+
+  if (isUserWhite === "false") {
+    const IS_FIRST_MOVE = y == BLACK_PAWN_HOME_ROW;
+    if (
+      isPawnMoveValid(
+        x,
+        y - 1,
+        isUserWhite,
+        gameState,
+        IN_POSITION_TO_TAKE,
+        thisMoveset
+      )
+    ) {
+      thisMoveset.push([x, y - 1]);
+      if (IS_FIRST_MOVE && isPawnMoveValid(x, y - 2, isUserWhite, gameState)) {
+        thisMoveset.push([x, y - 2]);
+      }
+    }
+  } else {
+    const IS_FIRST_MOVE = y == WHITE_PAWN_HOME_ROW;
+    if (
+      isPawnMoveValid(
+        x,
+        y + 1,
+        isUserWhite,
+        gameState,
+        IN_POSITION_TO_TAKE,
+        thisMoveset
+      )
+    ) {
+      thisMoveset.push([x, y + 1]);
+      if (IS_FIRST_MOVE && isPawnMoveValid(x, y + 2, isUserWhite, gameState)) {
+        thisMoveset.push([x, y + 2]);
+      }
+    }
+  }
 };
 
 const isMoveValid = (x, y, isUserWhite, gameState) => {
@@ -129,29 +215,16 @@ const isMoveValid = (x, y, isUserWhite, gameState) => {
   }
 };
 
-const nonExtenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
+const nonextenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
   piece.moveset.forEach((element) => {
     if (isUserWhite === "false") {
-      if (
-        isMoveValid(
-          Number(x) + element[0],
-          Number(y) - element[1],
-          isUserWhite,
-          gameState
-        )
-      ) {
-        thisMoveset.push([Number(x) + element[0], Number(y) - element[1]]);
+      if (isMoveValid(x + element[0], y - element[1], isUserWhite, gameState)) {
+        thisMoveset.push([x + element[0], y - element[1]]);
       }
+      // FINISH PAWN LOGIC HERE
     } else {
-      if (
-        isMoveValid(
-          Number(x) + element[0],
-          Number(y) + element[1],
-          isUserWhite,
-          gameState
-        )
-      ) {
-        thisMoveset.push([Number(x) + element[0], Number(y) + element[1]]);
+      if (isMoveValid(x + element[0], y + element[1], isUserWhite, gameState)) {
+        thisMoveset.push([x + element[0], y + element[1]]);
       }
     }
   });
@@ -168,23 +241,19 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
         // console.log("i is: ", i);
         // console.log("x: ", x, "  y: ", y);
         // console.log("pathIsClear", pathIsClear);
-        // console.log(Number(x) + element[0] * i, Number(y) - element[1] * i);
+        // console.log(x + element[0] * i, y - element[1] * i);
         if (
           isMoveValid(
-            Number(x) + element[0] * i,
-            Number(y) - element[1] * i,
+            x + element[0] * i,
+            y - element[1] * i,
             isUserWhite,
             gameState
           )
         ) {
-          thisMoveset.push([
-            Number(x) + element[0] * i,
-            Number(y) - element[1] * i,
-          ]);
+          thisMoveset.push([x + element[0] * i, y - element[1] * i]);
           if (
-            gameState[Number(x) + element[0] * i][
-              Number(y) - element[1] * i
-            ].slice(0, 1) === "w"
+            gameState[x + element[0] * i][y - element[1] * i].slice(0, 1) ===
+            "w"
           ) {
             pathIsClear = false;
           }
@@ -200,23 +269,19 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
         // console.log("i is: ", i);
         // console.log("x: ", x, "  y: ", y);
         // console.log("pathIsClear", pathIsClear);
-        // console.log(Number(x) + element[0] * i, Number(y) + element[1] * i);
+        // console.log(x + element[0] * i, y + element[1] * i);
         if (
           isMoveValid(
-            Number(x) + element[0] * i,
-            Number(y) + element[1] * i,
+            x + element[0] * i,
+            y + element[1] * i,
             isUserWhite,
             gameState
           )
         ) {
-          thisMoveset.push([
-            Number(x) + element[0] * i,
-            Number(y) + element[1] * i,
-          ]);
+          thisMoveset.push([x + element[0] * i, y + element[1] * i]);
           if (
-            gameState[Number(x) + element[0] * i][
-              Number(y) + element[1] * i
-            ].slice(0, 1) === "b"
+            gameState[x + element[0] * i][y + element[1] * i].slice(0, 1) ===
+            "b"
           ) {
             pathIsClear = false;
           }
