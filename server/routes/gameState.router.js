@@ -14,13 +14,13 @@ const gameState = [
 router.use(express.json());
 
 router.post("/", (req, res) => {
-  console.log("req.body: ", req.body);
+  // console.log("req.body: ", req.body);
   const selectedPiece = [req.body.currentX, req.body.currentY];
   const moveLocation = [req.body.toX, req.body.toY];
-  console.log("selectedPiece: ", selectedPiece);
-  console.log("move location: ", moveLocation);
+  // console.log("selectedPiece: ", selectedPiece);
+  // console.log("move location: ", moveLocation);
   const piece = gameState[selectedPiece[0]][selectedPiece[1]];
-  console.log("selectedPiece is", piece);
+  // console.log("selectedPiece is", piece);
 
   gameState[moveLocation[0]][moveLocation[1]] = piece;
   gameState[selectedPiece[0]][selectedPiece[1]] = "e";

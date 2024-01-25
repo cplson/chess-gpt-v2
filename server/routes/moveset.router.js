@@ -74,6 +74,38 @@ const moveset = [
 ];
 
 router.get(
+  "/check/gameState/:gameState/piece/:piece/userColorWhite/:isUserWhite/x/:x/y/:y",
+  (req, res) => {
+    console.log("inside check");
+
+    const SQUARES_PER_SIDE = 8;
+    const gameState = String(req.params.gameState).split(",");
+    const gameStateTwoD = [];
+    for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+      // gameStateTwoD[].push(gameState);
+      const row = gameState.slice(i * 8, (i + 1) * 8);
+      gameStateTwoD.push(row);
+    }
+
+    moveset.forEach((element) => {
+      // GET AGGRESSOR MOVESET TO SEE IF MOVE IS CHECK
+      if (element.symbol == req.params.piece.slice(1)) {
+        const aggressorMoveset = getMoveset(
+          element,
+          req.params.isUserWhite,
+          Number(req.params.x),
+          Number(req.params.y),
+          gameStateTwoD
+        );
+        console.log("aggressorMoveset is: ", aggressorMoveset);
+      }
+    });
+
+    res.send("sheesh");
+  }
+);
+
+router.get(
   "/gameState/:gameState/piece/:piece/userColorWhite/:isUserWhite/x/:x/y/:y",
   (req, res) => {
     const SQUARES_PER_SIDE = 8;
@@ -125,7 +157,7 @@ const isPawnMoveValid = (
   thisMoveset
 ) => {
   const IS_ON_BOARD = x >= 0 && x < 8 && y >= 0 && y < 8;
-  console.log(IN_POSITION_TO_TAKE);
+  // console.log(IN_POSITION_TO_TAKE);
   if (IS_ON_BOARD) {
     const OCCUPIED_PIECE_COLOR = gameState[x][y].slice(0, 1);
 
@@ -145,7 +177,7 @@ const checkForTakes = (x, y, gameState, thisMoveset, isUserWhite) => {
     x > 0 ? gameState[x - 1][y].slice(0, 1) : false;
   const OCCUPIED_RIGHT_PIECE_COLOR =
     x < 7 ? gameState[x + 1][y].slice(0, 1) : false;
-  console.log("check for takes");
+  // console.log("check for takes");
   const LEFT_SQUARE_OCCUPIED_BY_OPPONENT =
     (isUserWhite === "true" && OCCUPIED_LEFT_PIECE_COLOR === "b") ||
     (isUserWhite === "false" && OCCUPIED_LEFT_PIECE_COLOR === "w");

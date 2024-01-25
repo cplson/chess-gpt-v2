@@ -159,7 +159,7 @@ const renderPiece = (img, x, y) => {
 };
 
 const move = async (currentX, currentY, toX, toY) => {
-  console.log("inside move");
+  //   console.log("inside move");
   try {
     await axios
       .post("http://localhost:5000/api/gameState", {
@@ -169,14 +169,20 @@ const move = async (currentX, currentY, toX, toY) => {
         toY: toY,
       })
       .then(async (response) => {
-        res = await axios.get("http://localhost:5000/api/gameState");
-        console.log("selectedPiece is: ", selectedPiece);
-        // const checkResponse = await axios.get(
-        //   "htt[://localhost:5000/api/moveSet/check"
-        // );
+        res = await axios
+          .get("http://localhost:5000/api/gameState")
+          .then(async (res) => {
+            console.log("selectedPiece is: ", selectedPiece);
+            gameState = res.data;
+            console.log("gamestate is: ", gameState);
+            const nextMoveset = await axios.get(
+              `http://localhost:5000/api/moveset/check/gameState/${gameState}/piece/${gameState[toX][toY]}/userColorWhite/${userIsWhite}/x/${toX}/y/${toY}`
+            );
+            console.log("nextMoveset is", nextMoveset.data);
+          });
+
         selectedPiece = {};
         cachedPieceMoves = [];
-        gameState = res.data;
       });
   } catch (err) {
     console.log(err);
