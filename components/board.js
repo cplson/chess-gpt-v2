@@ -158,6 +158,10 @@ const move = async (currentX, currentY, toX, toY) => {
       })
       .then(async (response) => {
         res = await axios.get("http://localhost:5000/api/gameState");
+        console.log("selectedPiece is: ", selectedPiece);
+        // const checkResponse = await axios.get(
+        //   "htt[://localhost:5000/api/moveSet/check"
+        // );
         selectedPiece = {};
         cachedPieceMoves = [];
         gameState = res.data;
@@ -252,6 +256,8 @@ async function mousePressed() {
       let y = floor(pressedY / squareSideLength);
 
       console.log(selectedPiece);
+      const piece = gameState[x][y].slice(1);
+      console.log("piece is: ", piece);
 
       let pieceIsCashed = false;
       cachedPieceMoves.forEach((element, pieceIsCached) => {
@@ -264,8 +270,13 @@ async function mousePressed() {
         const response = await axios.get(
           `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/userColorWhite/${userIsWhite}/x/${x}/y/${y}`
         );
-        cachedPieceMoves.push({ x: x, y: y, moveset: response.data });
-        selectedPiece = { x: x, y: y, moveset: response.data };
+        cachedPieceMoves.push({
+          x: x,
+          y: y,
+          moveset: response.data,
+          piece: piece,
+        });
+        selectedPiece = { x: x, y: y, moveset: response.data, piece: piece };
       }
     }
   }
