@@ -140,20 +140,20 @@ router.get(
 );
 
 const check = (moveset, isUserWhite, gameState) => {
+  const OPPOSING_KING = isUserWhite == "true" ? "bk" : "wk";
   let check = false;
-  if (isUserWhite) {
-    moveset.forEach((element) => {
-      console.log("moveset element is: ", element);
-      console.log(
-        `gameState[${element[0]}][${element[1]}] is: `,
-        gameState[element[0]][element[1]]
-      );
-      if (gameState[element[0]][element[1]] == "bk") {
-        check = true;
-      }
-    });
-    return check;
-  }
+  console.log("opposingKing: ", OPPOSING_KING);
+  moveset.forEach((element) => {
+    console.log("moveset element is: ", element);
+    console.log(
+      `gameState[${element[0]}][${element[1]}] is: `,
+      gameState[element[0]][element[1]]
+    );
+    if (gameState[element[0]][element[1]] == OPPOSING_KING) {
+      check = true;
+    }
+  });
+  return check;
 };
 
 const getMoveset = (piece, isUserWhite, x, y, gameState) => {

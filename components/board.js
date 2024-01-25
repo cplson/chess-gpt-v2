@@ -2,7 +2,7 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-const userIsWhite = true;
+const userIsWhite = false;
 let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
