@@ -13,14 +13,14 @@ const gameState =
   // ];
 
   [
-    ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
-    ["wn", "wp", "e", "e", "e", "e", "bp", "bn"],
-    ["wb", "wp", "e", "e", "e", "e", "e", "bb"],
+    ["e", "wp", "e", "e", "e", "e", "bp", "br"],
+    ["e", "e", "e", "e", "br", "e", "e", "e"],
+    ["wb", "e", "e", "e", "e", "e", "e", "e"],
     ["e", "e", "e", "e", "e", "e", "e", "bq"],
-    ["wk", "wp", "e", "e", "wq", "e", "e", "bk"],
-    ["wb", "wp", "e", "e", "e", "e", "e", "bb"],
-    ["wn", "wp", "e", "e", "e", "e", "e", "bn"],
-    ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
+    ["wk", "e", "e", "e", "e", "e", "e", "bk"],
+    ["e", "e", "e", "bp", "e", "e", "e", "e"],
+    ["e", "wp", "wq", "e", "e", "e", "e", "bn"],
+    ["wr", "wp", "e", "e", "e", "e", "e", "e"],
   ];
 
 router.use(express.json());
