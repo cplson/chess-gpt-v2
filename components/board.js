@@ -175,10 +175,10 @@ const move = async (currentX, currentY, toX, toY) => {
             console.log("selectedPiece is: ", selectedPiece);
             gameState = res.data;
             console.log("gamestate is: ", gameState);
-            const nextMoveset = await axios.get(
-              `http://localhost:5000/api/moveset/check/gameState/${gameState}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
-            );
-            console.log("nextMoveset is", nextMoveset.data);
+            // const nextMoveset = await axios.get(
+            //   `http://localhost:5000/api/moveset/check/gameState/${gameState}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
+            // );
+            // console.log("nextMoveset is", nextMoveset.data);
           });
 
         selectedPiece = {};
@@ -292,10 +292,15 @@ async function mousePressed() {
         cachedPieceMoves.push({
           x: x,
           y: y,
-          moveset: response.data,
+          moveset: response.data.moves,
           piece: piece,
         });
-        selectedPiece = { x: x, y: y, moveset: response.data, piece: piece };
+        selectedPiece = {
+          x: x,
+          y: y,
+          moveset: response.data.moves,
+          piece: piece,
+        };
       }
     }
   }
