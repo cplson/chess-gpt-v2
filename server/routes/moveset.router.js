@@ -463,6 +463,9 @@ const nonextenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
 
 const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
   // console.log(piece);
+  if ((piece.symbol = "rook")) {
+    // rookLogic(x, y, isUserWhite, gameState, thisMoveset);
+  }
   piece.moveset.forEach((element) => {
     // console.log(element)
     let pathIsClear = true;
@@ -526,5 +529,9 @@ const extenderLogic = (piece, isUserWhite, x, y, gameState, thisMoveset) => {
     }
   });
 };
+
+// const rookLogic = (x, y, isUserWhite, gameState, thisMoveset) => {
+//   if(gameState)
+// }
 
 module.exports = router;
