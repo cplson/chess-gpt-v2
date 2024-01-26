@@ -146,13 +146,7 @@ const getMoves = (piece) => {
   return thisMoveset;
 };
 
-const isPawnMoveValid = (
-  x,
-  y,
-  color,
-  IN_POSITION_TO_TAKE = false,
-  thisMoveset
-) => {
+const isPawnMoveValid = (x, y, color, IN_POSITION_TO_TAKE, thisMoveset) => {
   const IS_ON_BOARD = x >= 0 && x < 8 && y >= 0 && y < 8;
   // console.log(IN_POSITION_TO_TAKE);
   if (IS_ON_BOARD) {
@@ -172,7 +166,6 @@ const checkForTakes = (x, y, thisMoveset, color) => {
     x > 0 ? gameState[x - 1][y].slice(0, 1) : false;
   const OCCUPIED_RIGHT_PIECE_COLOR =
     x < 7 ? gameState[x + 1][y].slice(0, 1) : false;
-  // console.log("check for takes");
   const LEFT_SQUARE_OCCUPIED_BY_OPPONENT =
     (color == "w" && OCCUPIED_LEFT_PIECE_COLOR === "b") ||
     (color == "b" && OCCUPIED_LEFT_PIECE_COLOR === "w");
@@ -191,32 +184,27 @@ const checkForTakes = (x, y, thisMoveset, color) => {
 const pawnLogic = (piece, thisMoveset) => {
   const WHITE_PAWN_HOME_ROW = 1;
   const BLACK_PAWN_HOME_ROW = 6;
-  const IN_POSITION_TO_TAKE = false;
 
   if (!(piece.color == "w")) {
     const IS_FIRST_MOVE = y == BLACK_PAWN_HOME_ROW;
-    if (
-      isPawnMoveValid(
-        piece.x,
-        piece.y - 1,
-        piece.color,
-        IN_POSITION_TO_TAKE,
-        thisMoveset
-      )
-    ) {
+    if (isPawnMoveValid(piece.x, piece.y - 1, piece.color, true, thisMoveset)) {
       thisMoveset.push([piece.x, piece.y - 1]);
-      if (IS_FIRST_MOVE && isPawnMoveValid(piece.x, piece.y - 2)) {
+      if (
+        IS_FIRST_MOVE &&
+        isPawnMoveValid(piece.x, piece.y - 2, piece.color, false, thisMoveset)
+      ) {
         thisMoveset.push([piece.x, piece.y - 2]);
       }
     }
   } else {
-    const IS_FIRST_MOVE = y == WHITE_PAWN_HOME_ROW;
-    if (
-      isPawnMoveValid(x, y + 1, piece.color, IN_POSITION_TO_TAKE, thisMoveset)
-    ) {
-      thisMoveset.push([x, y + 1]);
-      if (IS_FIRST_MOVE && isPawnMoveValid(x, y + 2, piece.color)) {
-        thisMoveset.push([x, y + 2]);
+    const IS_FIRST_MOVE = piece.y == WHITE_PAWN_HOME_ROW;
+    if (isPawnMoveValid(piece.x, piece.y + 1, piece.color, true, thisMoveset)) {
+      thisMoveset.push([piece.x, piece.y + 1]);
+      if (
+        IS_FIRST_MOVE &&
+        isPawnMoveValid(piece.x, piece.y + 2, piece.color, false, thisMoveset)
+      ) {
+        thisMoveset.push([piece.x, piece.y + 2]);
       }
     }
   }
@@ -241,7 +229,6 @@ const nonextenderLogic = (piece, thisMoveset) => {
       if (isMoveValid(x + element[0], y - element[1], piece.color)) {
         thisMoveset.push([x + element[0], y - element[1]]);
       }
-      // FINISH PAWN LOGIC HERE
     } else {
       if (isMoveValid(x + element[0], y + element[1], piece.color)) {
         thisMoveset.push([x + element[0], y + element[1]]);
@@ -251,21 +238,12 @@ const nonextenderLogic = (piece, thisMoveset) => {
 };
 
 const extenderLogic = (piece, thisMoveset) => {
-  // console.log(piece);
-  // if ((piece.symbol = "r")) {
-  //   rookLogic(x, y, isUserWhite, gameState, thisMoveset);
-  // }
   piece.set.forEach((element) => {
     let pathIsClear = true;
 
     if (!(piece.color == "w")) {
       let i = 1;
       while (pathIsClear) {
-        // console.log("i is: ", i);
-        // console.log("x: ", x, "  y: ", y);
-        // console.log("pathIsClear", pathIsClear);
-        // console.log(x + element[0] * i, y - element[1] * i);
-
         if (
           isMoveValid(
             piece.x + element[0] * i,
@@ -285,7 +263,6 @@ const extenderLogic = (piece, thisMoveset) => {
           ) {
             pathIsClear = false;
           }
-          // console.log("moveset[i]", thisMoveset[i - 1]);
         } else {
           pathIsClear = false;
         }
@@ -294,11 +271,6 @@ const extenderLogic = (piece, thisMoveset) => {
     } else {
       let i = 1;
       while (pathIsClear) {
-        // console.log("i is: ", i);
-        // console.log("x: ", x, "  y: ", y);
-        // console.log("pathIsClear", pathIsClear);
-        // console.log(x + element[0] * i, y + element[1] * i);
-
         if (
           isMoveValid(
             piece.x + element[0] * i,
