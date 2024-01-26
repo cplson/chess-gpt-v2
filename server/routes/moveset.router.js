@@ -218,7 +218,16 @@ const getPathToKing = (kingLocation, aggressorX, aggressorY) => {
     }
     console.log("vertical attack", pathToKing);
   } else {
-    console.log("horizontal attack");
+    if (kingLocation[0] > aggressorX) {
+      for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
+        pathToKing.push([i, aggressorY]);
+      }
+    } else {
+      for (let i = kingLocation[0] + 1; i < aggressorX; i++) {
+        pathToKing.push([i, aggressorY]);
+      }
+    }
+    console.log("horizontal attack", pathToKing);
   }
   return pathToKing;
 };
