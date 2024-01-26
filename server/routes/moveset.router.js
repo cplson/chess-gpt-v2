@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.use(express.json());
 const SQUARES_PER_SIDE = 8;
-let gameState;
+let gameState, gameStatus;
 let isUserWhite, x, y;
 const moveset = [
   {
@@ -104,9 +104,10 @@ const getGameState = (incomingState) => {
 };
 
 router.get(
-  "/gameState/:gameState/piece/:piece/isUserWhite/:isUserWhite/x/:x/y/:y",
+  "/gameState/:gameState/gameStatus/:gameStatus/piece/:piece/isUserWhite/:isUserWhite/x/:x/y/:y",
   (req, res) => {
     const SQUARES_PER_SIDE = 8;
+    gameStatus = req.params.gameStatus;
     isUserWhite = req.params.isUserWhite == "true" ? true : false;
     getGameState(req.params.gameState);
     x = Number(req.params.x);

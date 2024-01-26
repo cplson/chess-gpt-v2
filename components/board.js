@@ -7,7 +7,7 @@ let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
 let whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing;
-let gameState;
+let gameState, gameStatus;
 let pressedX, pressedY;
 let selectedPiece = {};
 let cachedPieceMoves = [];
@@ -26,7 +26,8 @@ async function preload() {
   whiteQueen = await loadImage("./assets/Chess_qlt45.svg");
   whiteKing = await loadImage("./assets/Chess_klt45.svg");
   let response = await axios.get("http://localhost:5000/api/gameState");
-  gameState = response.data;
+  gameState = response.data.gameState;
+  gameStatus = response.data.gameStatus;
 }
 async function setup() {
   pieces = await getPieces();
@@ -167,16 +168,18 @@ const move = async (currentX, currentY, toX, toY) => {
         currentY: currentY,
         toX: toX,
         toY: toY,
+        gameStatus: gameStatus,
       })
       .then(async (response) => {
         res = await axios
           .get("http://localhost:5000/api/gameState")
           .then(async (res) => {
             console.log("selectedPiece is: ", selectedPiece);
-            gameState = res.data;
+            gameState = res.data.gameState;
+            gameStatus = res.data.gameStatus;
             console.log("gamestate is: ", gameState);
             // const nextMoveset = await axios.get(
-            //   `http://localhost:5000/api/moveset/check/gameState/${gameState}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
+            //   `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
             // );
             // console.log("nextMoveset is", nextMoveset.data);
           });
@@ -287,7 +290,7 @@ async function mousePressed() {
       });
       if (pieceIsCashed === false) {
         const response = await axios.get(
-          `http://localhost:5000/api/moveset/gameState/${gameState}/piece/${gameState[x][y]}/isUserWhite/${userIsWhite}/x/${x}/y/${y}`
+          `http://localhost:5000/api/moveset/gameState/${gameState}/gameStatus/${gameStatus}/piece/${gameState[x][y]}/isUserWhite/${userIsWhite}/x/${x}/y/${y}`
         );
         cachedPieceMoves.push({
           x: x,
