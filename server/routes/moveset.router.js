@@ -196,7 +196,7 @@ const getPathToKing = (kingLocation, aggressorX, aggressorY) => {
         j--;
       }
       console.log("pathToKing: ", pathToKing);
-    } else if (kingLocation[0] < aggressorX && kingLocation[1] < aggressorY) {
+    } else {
       let j = aggressorY - 1;
       for (let i = aggressorX - 1; i > kingLocation[0]; i--) {
         pathToKing.push([i, j]);
@@ -206,7 +206,17 @@ const getPathToKing = (kingLocation, aggressorX, aggressorY) => {
     }
     console.log("diagonal attack");
   } else if (kingLocation[0] == aggressorX) {
-    console.log("vertical attack");
+    if (kingLocation[1] > aggressorY) {
+      for (let i = aggressorY + 1; i < kingLocation[1]; i++) {
+        pathToKing.push([aggressorX, i]);
+      }
+    } else if (kingLocation[1] < aggressorY) {
+      console.log("inside else if");
+      for (let i = kingLocation[1] + 1; i < aggressorY; i++) {
+        pathToKing.push([aggressorX, i]);
+      }
+    }
+    console.log("vertical attack", pathToKing);
   } else {
     console.log("horizontal attack");
   }
