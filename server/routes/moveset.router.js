@@ -151,17 +151,39 @@ const checkForCheck = (piece, x, y) => {
   const formattedPiece = formatPiece(piece);
   let kingColor = formattedPiece.color == "w" ? "b" : "w";
   let king = formatPiece(kingColor + "k", true);
-  // console.log(piece, gameState);
-  // for (let i = 0; i < SQUARES_PER_SIDE; i++) {
-  //   for (let j = 0; j < SQUARES_PER_SIDE; j++) {
-  //     if (gameState[i][j] == kingColor + "k")
-  //       king = formatPiece(kingColor + "k", i, j);
-  //   }
-  // }
 
-  console.log("inside format piece with piece: ", formattedPiece);
-  console.log("king is: ", king);
-  return "eyy";
+  const CHECK = checkForThreat(king.location, kingColor);
+  console.log("is check? ", CHECK);
+  // console.log("inside format piece with piece: ", formattedPiece);
+  // console.log("king is: ", king);
+  return CHECK;
+};
+
+const checkForThreat = (location, checkForColor) => {
+  // GET ALL OPPONENT FORMATTED PIECES
+  // console.log("checkForColor is: ", checkForColor);
+  let threatCondition = false;
+  const opponentPieces = getTeamPieces(checkForColor == "w" ? "b" : "w");
+  opponentPieces.forEach((oppPiece) => {
+    oppPiece.moves.forEach((move) => {
+      if (move[0] == location[0] && move[1] == location[1]) {
+        threatCondition = true;
+      }
+    });
+  });
+  return threatCondition;
+};
+
+const getTeamPieces = (color) => {
+  const teamPieces = [];
+  for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+    for (let j = 0; j < SQUARES_PER_SIDE; j++) {
+      if (gameState[i][j].slice(0, 1) == color) {
+        teamPieces.push(formatPiece(gameState[i][j]));
+      }
+    }
+  }
+  return teamPieces;
 };
 
 const getMoves = (piece) => {
