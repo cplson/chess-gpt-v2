@@ -76,12 +76,22 @@ const moveset = [
   },
 ];
 
-const formatPiece = (stateString, x, y) => {
+const formatPiece = (stateString, isOpponent = false) => {
   const symbol = stateString.slice(1);
-  const color = stateString.slice(0, 1);
-  location = [x, y];
-  let set, moveType;
+  const opponent = stateString == "w" ? "b" : "w";
+  const color = !isOpponent ? stateString.slice(0, 1) : opponent;
+  let set, moveType, x, y, location;
   let moves = [];
+
+  for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+    for (let j = 0; j < SQUARES_PER_SIDE; j++) {
+      if (gameState[i][j] == stateString) {
+        x = i;
+        y = j;
+        location = [x, y];
+      }
+    }
+  }
   moveset.forEach((element) => {
     if (symbol == element.symbol) {
       set = element.moveset;
@@ -138,8 +148,19 @@ router.get(
 );
 
 const checkForCheck = (piece, x, y) => {
-  const formattedPiece = formatPiece(piece, x, y);
+  const formattedPiece = formatPiece(piece);
+  let kingColor = formattedPiece.color == "w" ? "b" : "w";
+  let king = formatPiece(kingColor + "k", true);
+  // console.log(piece, gameState);
+  // for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+  //   for (let j = 0; j < SQUARES_PER_SIDE; j++) {
+  //     if (gameState[i][j] == kingColor + "k")
+  //       king = formatPiece(kingColor + "k", i, j);
+  //   }
+  // }
+
   console.log("inside format piece with piece: ", formattedPiece);
+  console.log("king is: ", king);
   return "eyy";
 };
 
