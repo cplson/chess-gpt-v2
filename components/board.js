@@ -2,7 +2,7 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-const userIsWhite = false;
+const userIsWhite = true;
 let gameMove;
 let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
@@ -182,7 +182,7 @@ const move = async (fromX, fromY, toX, toY) => {
             gameMove = JSON.stringify(res.data.gameMoves);
             console.log("gameMove is: ", gameMove);
             const nextMoveset = await axios.get(
-              `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/gameMove/${gameMove}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
+              `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/gameMove/${gameMove}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}`
             );
             // console.log("nextMoveset is", nextMoveset.data);
           });

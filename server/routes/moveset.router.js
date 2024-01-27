@@ -76,19 +76,30 @@ const moveset = [
   },
 ];
 
-const formatPiece = (stateString, isOpponent = false) => {
+const formatPiece = (
+  stateString,
+  thisX = undefined,
+  thisY = undefined,
+  isOpponent = false
+) => {
   const symbol = stateString.slice(1);
   const opponent = stateString == "w" ? "b" : "w";
   const color = !isOpponent ? stateString.slice(0, 1) : opponent;
-  let set, moveType, x, y, location;
+  let set, moveType, location, x, y;
   let moves = [];
-
-  for (let i = 0; i < SQUARES_PER_SIDE; i++) {
-    for (let j = 0; j < SQUARES_PER_SIDE; j++) {
-      if (gameState[i][j] == stateString) {
-        x = i;
-        y = j;
-        location = [x, y];
+  if (thisX != undefined && thisY != undefined) {
+    console.log(thisX, thisY);
+    x = thisX;
+    y = thisY;
+    location = [thisX, thisY];
+  } else {
+    for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+      for (let j = 0; j < SQUARES_PER_SIDE; j++) {
+        if (gameState[i][j] == color + symbol) {
+          x = i;
+          y = j;
+          location = [x, y];
+        }
       }
     }
   }
@@ -125,27 +136,86 @@ router.get(
     y = Number(req.params.y);
 
     const formattedPiece = formatPiece(req.params.piece, x, y);
+    console.log(
+      "queen formatted piece when clicked to highlight move; ",
+      formattedPiece
+    );
 
     res.send({ moves: formattedPiece.moves, gameState: gameState });
   }
 );
 
 router.get(
-  "/check/gameState/:gameState/gameStatus/:gameStatus/gameMove/:gameMove/piece/:piece/isUserWhite/:isUserWhite/x/:x/y/:y",
+  "/check/gameState/:gameState/gameStatus/:gameStatus/gameMove/:gameMove/piece/:piece/isUserWhite/:isUserWhite/",
   (req, res) => {
     getGameState(req.params.gameState);
     gameStatus = req.params.gameStatus;
     const incomingMove = JSON.parse(req.params.gameMove);
+    // let isUserWhite = req.params.isUserWhite;
+    let piece = req.params.piece;
+    let pieceColor = piece.slice(0, 1);
+    console.log("pieceColor: ", pieceColor);
     gameMoves.push(incomingMove);
 
-    const CHECK = checkForCheck(
-      req.params.piece,
-      incomingMove.toX,
-      incomingMove.toY
-    );
+    const CHECK = checkForCheck(piece, incomingMove.toX, incomingMove.toY);
+
+    // CHECK IF NOT CHECKMATE
+    if (CHECK) {
+      gameStatus = "check";
+      const aggressor = formatPiece(piece);
+      const kingUnderDuress = formatPiece(pieceColor + "k", true);
+      // console.log("aggressor: ", aggressor);
+      // console.log("kingUnderDuress: ", kingUnderDuress);
+      const pathToKing = getPathToKing(
+        kingUnderDuress.location,
+        incomingMove.toX,
+        incomingMove.toY,
+        aggressor
+      );
+      const availableMoves = attemptToNeutralizeThreat(
+        pieceColor == "w" ? "b" : "w",
+        pathToKing,
+        incomingMove.toX,
+        incomingMove.toY
+      );
+
+      if (availableMoves.length == 0) {
+        gameStatus = "checkmate";
+      }
+    }
     res.send(gameStatus);
+
+    // IMPLEMENT LATER
+    //   if(!CHECK){
+    //     res.send(gameStatus);
+    //   }else{
+
+    //     res.send({gameStatus, availableMoveset})
+    //   }
   }
 );
+
+const attemptToNeutralizeThreat = (
+  color,
+  pathToKing,
+  aggressorX,
+  aggressorY
+) => {
+  const teamPieces = getTeamPieces(color);
+  const availableMoves = [];
+
+  // console.log(
+  //   "inside attemptToNeutralizeThreat(): ",
+  //   color,
+  //   pathToKing,
+  //   aggressorX,
+  //   aggressorY
+  // );
+  // check if any pieces can take the aggressor
+  // if pathtoKing length is > 0, check if pieces can get in the path of the aggressor
+
+  return availableMoves;
+};
 
 const checkForCheck = (piece, x, y) => {
   const formattedPiece = formatPiece(piece);
@@ -153,7 +223,6 @@ const checkForCheck = (piece, x, y) => {
   let king = formatPiece(kingColor + "k", true);
 
   const CHECK = checkForThreat(king.location, kingColor);
-  console.log("is check? ", CHECK);
   // console.log("inside format piece with piece: ", formattedPiece);
   // console.log("king is: ", king);
   return CHECK;
@@ -184,6 +253,68 @@ const getTeamPieces = (color) => {
     }
   }
   return teamPieces;
+};
+
+const getPathToKing = (kingLocation, aggressorX, aggressorY, aggressor) => {
+  const pathToKing = [];
+  if (aggressor.moveType == "extender") {
+    console.log("inside getPathToKing(), ", aggressor);
+    if (kingLocation[0] != aggressorX && kingLocation[1] != aggressorY) {
+      if (kingLocation[0] > aggressorX && kingLocation[1] > aggressorY) {
+        let j = aggressorY + 1;
+        for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
+          pathToKing.push([i, j]);
+          j++;
+        }
+      } else if (kingLocation[0] < aggressorX && kingLocation[1] > aggressorY) {
+        let j = aggressorY + 1;
+        for (let i = aggressorX - 1; i > kingLocation[0]; i--) {
+          pathToKing.push([i, j]);
+          j++;
+        }
+        console.log("pathToKing: ", pathToKing);
+      } else if (kingLocation[0] > aggressorX && kingLocation[1] < aggressorY) {
+        let j = aggressorY - 1;
+        for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
+          pathToKing.push([i, j]);
+          j--;
+        }
+        console.log("pathToKing: ", pathToKing);
+      } else {
+        let j = aggressorY - 1;
+        for (let i = aggressorX - 1; i > kingLocation[0]; i--) {
+          pathToKing.push([i, j]);
+          j--;
+        }
+        console.log("pathToKing: ", pathToKing);
+      }
+      console.log("diagonal attack");
+    } else if (kingLocation[0] == aggressorX) {
+      if (kingLocation[1] > aggressorY) {
+        for (let i = aggressorY + 1; i < kingLocation[1]; i++) {
+          pathToKing.push([aggressorX, i]);
+        }
+      } else if (kingLocation[1] < aggressorY) {
+        console.log("inside else if");
+        for (let i = kingLocation[1] + 1; i < aggressorY; i++) {
+          pathToKing.push([aggressorX, i]);
+        }
+      }
+      console.log("vertical attack", pathToKing);
+    } else {
+      if (kingLocation[0] > aggressorX) {
+        for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
+          pathToKing.push([i, aggressorY]);
+        }
+      } else {
+        for (let i = kingLocation[0] + 1; i < aggressorX; i++) {
+          pathToKing.push([i, aggressorY]);
+        }
+      }
+      console.log("horizontal attack", pathToKing);
+    }
+  }
+  return pathToKing;
 };
 
 const getMoves = (piece) => {
@@ -456,66 +587,6 @@ const extenderLogic = (piece, thisMoveset) => {
 //     res.send("sheesh");
 //   }
 // );
-
-// const getPathToKing = (kingLocation, aggressorX, aggressorY) => {
-//   const pathToKing = [];
-//   console.log("inside getPathToKing()");
-//   if (kingLocation[0] != aggressorX && kingLocation[1] != aggressorY) {
-//     if (kingLocation[0] > aggressorX && kingLocation[1] > aggressorY) {
-//       let j = aggressorY + 1;
-//       for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
-//         pathToKing.push([i, j]);
-//         j++;
-//       }
-//     } else if (kingLocation[0] < aggressorX && kingLocation[1] > aggressorY) {
-//       let j = aggressorY + 1;
-//       for (let i = aggressorX - 1; i > kingLocation[0]; i--) {
-//         pathToKing.push([i, j]);
-//         j++;
-//       }
-//       console.log("pathToKing: ", pathToKing);
-//     } else if (kingLocation[0] > aggressorX && kingLocation[1] < aggressorY) {
-//       let j = aggressorY - 1;
-//       for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
-//         pathToKing.push([i, j]);
-//         j--;
-//       }
-//       console.log("pathToKing: ", pathToKing);
-//     } else {
-//       let j = aggressorY - 1;
-//       for (let i = aggressorX - 1; i > kingLocation[0]; i--) {
-//         pathToKing.push([i, j]);
-//         j--;
-//       }
-//       console.log("pathToKing: ", pathToKing);
-//     }
-//     console.log("diagonal attack");
-//   } else if (kingLocation[0] == aggressorX) {
-//     if (kingLocation[1] > aggressorY) {
-//       for (let i = aggressorY + 1; i < kingLocation[1]; i++) {
-//         pathToKing.push([aggressorX, i]);
-//       }
-//     } else if (kingLocation[1] < aggressorY) {
-//       console.log("inside else if");
-//       for (let i = kingLocation[1] + 1; i < aggressorY; i++) {
-//         pathToKing.push([aggressorX, i]);
-//       }
-//     }
-//     console.log("vertical attack", pathToKing);
-//   } else {
-//     if (kingLocation[0] > aggressorX) {
-//       for (let i = aggressorX + 1; i < kingLocation[0]; i++) {
-//         pathToKing.push([i, aggressorY]);
-//       }
-//     } else {
-//       for (let i = kingLocation[0] + 1; i < aggressorX; i++) {
-//         pathToKing.push([i, aggressorY]);
-//       }
-//     }
-//     console.log("horizontal attack", pathToKing);
-//   }
-//   return pathToKing;
-// };
 
 // const attemptToTakeAggressor = (
 //   defender,
