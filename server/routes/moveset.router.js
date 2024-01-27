@@ -79,16 +79,19 @@ const moveset = [
 const formatPiece = (
   stateString,
   thisX = undefined,
-  thisY = undefined,
-  isOpponent = false
+  thisY = undefined
+  // isOpponent = false
 ) => {
+  // console.log(
+  //   `when formatPiece for ${stateString} isOpponent is: `,
+  //   isOpponent
+  // );
   const symbol = stateString.slice(1);
-  const opponent = stateString == "w" ? "b" : "w";
-  const color = !isOpponent ? stateString.slice(0, 1) : opponent;
+  // const opponent = stateString == "w" ? "b" : "w";
+  const color = stateString.slice(0, 1);
   let set, moveType, location, x, y;
   let moves = [];
   if (thisX != undefined && thisY != undefined) {
-    console.log(thisX, thisY);
     x = thisX;
     y = thisY;
     location = [thisX, thisY];
@@ -136,10 +139,6 @@ router.get(
     y = Number(req.params.y);
 
     const formattedPiece = formatPiece(req.params.piece, x, y);
-    console.log(
-      "queen formatted piece when clicked to highlight move; ",
-      formattedPiece
-    );
 
     res.send({ moves: formattedPiece.moves, gameState: gameState });
   }
@@ -154,7 +153,6 @@ router.get(
     // let isUserWhite = req.params.isUserWhite;
     let piece = req.params.piece;
     let pieceColor = piece.slice(0, 1);
-    console.log("pieceColor: ", pieceColor);
     gameMoves.push(incomingMove);
 
     const CHECK = checkForCheck(piece, incomingMove.toX, incomingMove.toY);
@@ -163,7 +161,9 @@ router.get(
     if (CHECK) {
       gameStatus = "check";
       const aggressor = formatPiece(piece);
-      const kingUnderDuress = formatPiece(pieceColor + "k", true);
+      const kingUnderDuress = formatPiece(
+        (pieceColor == "w" ? "b" : "w") + "k"
+      );
       // console.log("aggressor: ", aggressor);
       // console.log("kingUnderDuress: ", kingUnderDuress);
       const pathToKing = getPathToKing(
@@ -202,6 +202,7 @@ const attemptToNeutralizeThreat = (
   aggressorY
 ) => {
   const teamPieces = getTeamPieces(color);
+  console.log(teamPieces);
   const availableMoves = [];
 
   // console.log(
@@ -258,7 +259,13 @@ const getTeamPieces = (color) => {
 const getPathToKing = (kingLocation, aggressorX, aggressorY, aggressor) => {
   const pathToKing = [];
   if (aggressor.moveType == "extender") {
-    console.log("inside getPathToKing(), ", aggressor);
+    // console.log(
+    //   "inside getPathToKing(), ",
+    //   kingLocation,
+    //   aggressor,
+    //   aggressorX,
+    //   aggressorY
+    // );
     if (kingLocation[0] != aggressorX && kingLocation[1] != aggressorY) {
       if (kingLocation[0] > aggressorX && kingLocation[1] > aggressorY) {
         let j = aggressorY + 1;
