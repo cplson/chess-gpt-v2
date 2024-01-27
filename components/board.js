@@ -93,7 +93,12 @@ const drawBoard = () => {
         highlightOnHover(j, i);
         highlightOnClick(j, i);
         // highlightMoveset(selectedPiece);
-        findPiece(gameState[j][i].slice(0, 1), gameState[j][i].slice(1), j, i);
+        findPiece(
+          gameState[j][i].slice(0, 1),
+          gameState[j][i].slice(1, 2),
+          j,
+          i
+        );
       }
     }
   }

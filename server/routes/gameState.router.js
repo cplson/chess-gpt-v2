@@ -15,27 +15,37 @@ const gameState =
   // ];
 
   [
-    ["e", "e", "wp", "e", "e", "e", "bp", "br"],
+    ["wrq", "e", "wp", "e", "e", "e", "bp", "brq"],
     ["e", "e", "e", "e", "br", "e", "e", "e"],
     ["wb", "e", "e", "e", "e", "e", "e", "e"],
     ["e", "e", "e", "e", "e", "e", "e", "bq"],
     ["wk", "e", "e", "e", "e", "e", "e", "bk"],
     ["e", "e", "e", "bp", "e", "e", "e", "e"],
     ["e", "wp", "wq", "e", "e", "e", "e", "bn"],
-    ["wr", "wp", "e", "e", "e", "e", "e", "e"],
+    ["wrk", "wp", "e", "e", "e", "e", "e", "brk"],
   ];
 
 router.use(express.json());
 
 router.post("/", (req, res) => {
-  // console.log("req.body: ", req.body);
   gameStatus = req.body.gameStatus;
+
+  // the first time a rook is moved, remove its q/k specification
+  if (
+    (req.body.fromX == 0 || req.body.fromX == 7) &&
+    (req.body.fromY == 0 || req.body.fromY == 7)
+  ) {
+    gameState[req.body.fromX][req.body.fromY] = gameState[req.body.fromX][
+      req.body.fromY
+    ].slice(0, 2);
+  }
   gameMoves.push({
     fromX: req.body.fromX,
     fromY: req.body.fromY,
     toX: req.body.toX,
     toY: req.body.toY,
   });
+
   const selectedPiece = [req.body.fromX, req.body.fromY];
   const moveLocation = [req.body.toX, req.body.toY];
   // console.log("selectedPiece: ", selectedPiece);
@@ -45,6 +55,7 @@ router.post("/", (req, res) => {
 
   gameState[moveLocation[0]][moveLocation[1]] = piece;
   gameState[selectedPiece[0]][selectedPiece[1]] = "e";
+  console.log(gameState);
 
   res.sendStatus(201);
 });

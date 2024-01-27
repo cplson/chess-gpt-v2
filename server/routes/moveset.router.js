@@ -86,7 +86,8 @@ const formatPiece = (
   //   `when formatPiece for ${stateString} isOpponent is: `,
   //   isOpponent
   // );
-  const symbol = stateString.slice(1);
+  const symbol = stateString.slice(1, 3);
+  // console.log(symbol);
   // const opponent = stateString == "w" ? "b" : "w";
   const color = stateString.slice(0, 1);
   let set, moveType, location, x, y;
@@ -107,11 +108,12 @@ const formatPiece = (
     }
   }
   moveset.forEach((element) => {
-    if (symbol == element.symbol) {
+    if (symbol.slice(0, 1) == element.symbol) {
       set = element.moveset;
       moveType = element.moveType;
     }
   });
+  // console.log("symbol after slice logic", symbol.length);
 
   moves = getMoves({ symbol, color, x, y, location, set, moveType });
   return { symbol, color, location, set, moveType, moves };
@@ -164,7 +166,7 @@ router.get(
       const kingUnderDuress = formatPiece(
         (pieceColor == "w" ? "b" : "w") + "k"
       );
-      // console.log("aggressor: ", aggressor);
+      console.log("aggressor: ", aggressor);
       // console.log("kingUnderDuress: ", kingUnderDuress);
       const pathToKing = getPathToKing(
         kingUnderDuress.location,
@@ -434,6 +436,9 @@ const nonextenderLogic = (piece, thisMoveset) => {
 };
 
 const extenderLogic = (piece, thisMoveset) => {
+  if (piece.symbol == "r") {
+    // checkCastle()
+  }
   piece.set.forEach((element) => {
     let pathIsClear = true;
 
