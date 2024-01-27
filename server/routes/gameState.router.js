@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 let gameStatus = "no threat";
+const gameMoves = [];
 const gameState =
   // [
   //   ["wr", "wp", "e", "e", "e", "e", "bp", "br"],
@@ -29,7 +30,13 @@ router.use(express.json());
 router.post("/", (req, res) => {
   // console.log("req.body: ", req.body);
   gameStatus = req.body.gameStatus;
-  const selectedPiece = [req.body.currentX, req.body.currentY];
+  gameMoves.push({
+    fromX: req.body.fromX,
+    fromY: req.body.fromY,
+    toX: req.body.toX,
+    toY: req.body.toY,
+  });
+  const selectedPiece = [req.body.fromX, req.body.fromY];
   const moveLocation = [req.body.toX, req.body.toY];
   // console.log("selectedPiece: ", selectedPiece);
   // console.log("move location: ", moveLocation);
@@ -43,7 +50,12 @@ router.post("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  res.send({ gameState: gameState, gameStatus: gameStatus });
+  // console.log("gameMoves is: ", gameMoves);
+  res.send({
+    gameState: gameState,
+    gameStatus: gameStatus,
+    gameMoves: gameMoves.length != 0 ? gameMoves[gameMoves.length - 1] : {},
+  });
 });
 
 module.exports = router;

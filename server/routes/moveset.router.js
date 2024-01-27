@@ -4,6 +4,7 @@ const router = express.Router();
 router.use(express.json());
 const SQUARES_PER_SIDE = 8;
 let gameState, gameStatus;
+const gameMoves = [];
 let isUserWhite, x, y;
 const moveset = [
   {
@@ -114,23 +115,33 @@ router.get(
     y = Number(req.params.y);
 
     const formattedPiece = formatPiece(req.params.piece, x, y);
-    // moveset.forEach((element) => {
-    //   if (element.symbol == req.params.piece.slice(1)) {
-    //     res.send(
-    //       getMoves(
-    //         element,
-    //         isUserWhite,
-    //         Number(req.params.x),
-    //         Number(req.params.y),
-    //         gameStateTwoD
-    //       )
-    //     );
-    //   }
-    // });
 
     res.send({ moves: formattedPiece.moves, gameState: gameState });
   }
 );
+
+router.get(
+  "/check/gameState/:gameState/gameStatus/:gameStatus/gameMove/:gameMove/piece/:piece/isUserWhite/:isUserWhite/x/:x/y/:y",
+  (req, res) => {
+    getGameState(req.params.gameState);
+    gameStatus = req.params.gameStatus;
+    const incomingMove = JSON.parse(req.params.gameMove);
+    gameMoves.push(incomingMove);
+
+    const CHECK = checkForCheck(
+      req.params.piece,
+      incomingMove.toX,
+      incomingMove.toY
+    );
+    res.send(gameStatus);
+  }
+);
+
+const checkForCheck = (piece, x, y) => {
+  const formattedPiece = formatPiece(piece, x, y);
+  console.log("inside format piece with piece: ", formattedPiece);
+  return "eyy";
+};
 
 const getMoves = (piece) => {
   const thisMoveset = [];
@@ -226,12 +237,16 @@ const isMoveValid = (x, y, color) => {
 const nonextenderLogic = (piece, thisMoveset) => {
   piece.set.forEach((element) => {
     if (!(piece.color == "w")) {
-      if (isMoveValid(x + element[0], y - element[1], piece.color)) {
-        thisMoveset.push([x + element[0], y - element[1]]);
+      if (
+        isMoveValid(piece.x + element[0], piece.y - element[1], piece.color)
+      ) {
+        thisMoveset.push([piece.x + element[0], piece.y - element[1]]);
       }
     } else {
-      if (isMoveValid(x + element[0], y + element[1], piece.color)) {
-        thisMoveset.push([x + element[0], y + element[1]]);
+      if (
+        isMoveValid(piece.x + element[0], piece.y + element[1], piece.color)
+      ) {
+        thisMoveset.push([piece.x + element[0], piece.y + element[1]]);
       }
     }
   });
@@ -306,7 +321,7 @@ const extenderLogic = (piece, thisMoveset) => {
 // }
 
 // router.get(
-//   "/check/gameState/:gameState/piece/:piece/isUserWhite/:isUserWhite/x/:x/y/:y",
+//   "/check/gameState/:gameState/gameStatus/:gameStatus/gameMoves/:gameMoves/piece/:piece/isUserWhite/:isUserWhite/x/:x/y/:y",
 //   (req, res) => {
 //     // console.log("inside check");
 

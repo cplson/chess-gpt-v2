@@ -2,7 +2,8 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-const userIsWhite = true;
+const userIsWhite = false;
+let gameMove;
 let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
 let blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing;
@@ -159,16 +160,17 @@ const renderPiece = (img, x, y) => {
   );
 };
 
-const move = async (currentX, currentY, toX, toY) => {
+const move = async (fromX, fromY, toX, toY) => {
   //   console.log("inside move");
   try {
     await axios
       .post("http://localhost:5000/api/gameState", {
-        currentX: currentX,
-        currentY: currentY,
+        fromX: fromX,
+        fromY: fromY,
         toX: toX,
         toY: toY,
         gameStatus: gameStatus,
+        gameMoves: gameMove,
       })
       .then(async (response) => {
         res = await axios
@@ -177,10 +179,11 @@ const move = async (currentX, currentY, toX, toY) => {
             console.log("selectedPiece is: ", selectedPiece);
             gameState = res.data.gameState;
             gameStatus = res.data.gameStatus;
-            console.log("gamestate is: ", gameState);
-            // const nextMoveset = await axios.get(
-            //   `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
-            // );
+            gameMove = JSON.stringify(res.data.gameMoves);
+            console.log("gameMove is: ", gameMove);
+            const nextMoveset = await axios.get(
+              `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/gameMove/${gameMove}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}/x/${toX}/y/${toY}`
+            );
             // console.log("nextMoveset is", nextMoveset.data);
           });
 
