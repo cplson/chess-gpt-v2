@@ -17,12 +17,12 @@ const gameState =
   [
     ["wrq", "e", "wp", "e", "e", "e", "bp", "brq"],
     ["e", "e", "e", "e", "br", "e", "e", "e"],
-    ["wb", "e", "e", "e", "e", "bq", "e", "e"],
-    ["e", "e", "e", "e", "e", "e", "e", "e"],
+    ["wb", "e", "e", "e", "e", "e", "e", "e"],
+    ["e", "e", "e", "e", "e", "bq", "e", "e"],
     ["wku", "e", "e", "e", "e", "e", "e", "bku"],
     ["e", "e", "e", "bp", "e", "e", "e", "e"],
-    ["e", "wp", "wq", "e", "bn", "e", "e", "e"],
-    ["wrk", "wp", "e", "e", "e", "e", "e", "brk"],
+    ["e", "wp", "e", "e", "bn", "e", "e", "e"],
+    ["wrk", "wp", "e", "e", "e", "wq", "e", "brk"],
   ];
 
 router.use(express.json());

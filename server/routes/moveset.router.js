@@ -5,7 +5,7 @@ router.use(express.json());
 const SQUARES_PER_SIDE = 8;
 let gameState, gameStatus;
 const gameMoves = [];
-let isUserWhite, x, y;
+let moverColor, x, y;
 const moveset = [
   {
     symbol: "p",
@@ -134,7 +134,7 @@ router.get(
   (req, res) => {
     const SQUARES_PER_SIDE = 8;
     gameStatus = req.params.gameStatus;
-    isUserWhite = req.params.isUserWhite == "true" ? true : false;
+    moverColor = req.params.isUserWhite == "true" ? "w" : "b";
     formatGameState(req.params.gameState);
     x = Number(req.params.x);
     y = Number(req.params.y);
@@ -250,6 +250,10 @@ const checkForThreat = (location, checkForColor) => {
   // console.log("checkForColor is: ", checkForColor);
   let threatCondition = false;
   const opponentPieces = getTeamPieces(checkForColor == "w" ? "b" : "w");
+  console.log("checkForColor: ", checkForColor);
+  console.log("location: ", location);
+  console.log("kingColor: ", checkForColor);
+
   opponentPieces.forEach((oppPiece) => {
     oppPiece.moves.forEach((move) => {
       if (move[0] == location[0] && move[1] == location[1]) {
@@ -463,13 +467,49 @@ const checkCastle = (piece, thisMoveset) => {
         gameState[2][piece.y] == "e" &&
         gameState[3][piece.y] == "e")
     ) {
+      // if no friendlies are in the path, check for check interferences
+      let threat = false;
+
+      // console.log(king.location, piece.color);
+
+      threat = checkForThreat(king.location, piece.color);
+      if (
+        (piece.x == 0 &&
+          checkForThreat(
+            [[king.location[0] - 1], [king.location[1]]],
+            piece.color
+          )) ||
+        checkForThreat(
+          [[king.location[0] - 2], [king.location[1]]],
+          piece.color
+        )
+      ) {
+        threat = true;
+      } else if (
+        (piece.x == 7 &&
+          checkForThreat(
+            [[king.location[0] + 1], [king.location[1]]],
+            piece.color
+          )) ||
+        checkForThreat(
+          [[king.location[0] + 2], [king.location[1]]],
+          piece.color
+        )
+      ) {
+        threat = true;
+      }
+      console.log("threat after all threat checks", threat);
     }
   }
 };
 
 const extenderLogic = (piece, thisMoveset) => {
   // if rook has not been moved, check if castling is a valid move
-  if (piece.symbol.slice(0, 1) == "r" && piece.symbol.length == 2) {
+  if (
+    piece.symbol.slice(0, 1) == "r" &&
+    piece.symbol.length == 2 &&
+    piece.color == moverColor
+  ) {
     checkCastle(piece, thisMoveset);
   }
   piece.set.forEach((element) => {
