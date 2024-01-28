@@ -76,30 +76,27 @@ const moveset = [
   },
 ];
 
-const formatPiece = (
-  stateString,
-  thisX = undefined,
-  thisY = undefined
-  // isOpponent = false
-) => {
-  // console.log(
-  //   `when formatPiece for ${stateString} isOpponent is: `,
-  //   isOpponent
-  // );
+// ALL PIECE DATA THAT THE MOVESET ROUTER WORKS WITH MUST BE FORMATTED USING THIS FORMATTER!!
+const formatPiece = (stateString, thisX = undefined, thisY = undefined) => {
   const symbol = stateString.slice(1, 3);
   // console.log(symbol);
-  // const opponent = stateString == "w" ? "b" : "w";
+
   const color = stateString.slice(0, 1);
   let set, moveType, location, x, y;
   let moves = [];
+  // this is used for formatting whole teams
   if (thisX != undefined && thisY != undefined) {
     x = thisX;
     y = thisY;
     location = [thisX, thisY];
   } else {
+    // this is used for formatting single pieces
     for (let i = 0; i < SQUARES_PER_SIDE; i++) {
       for (let j = 0; j < SQUARES_PER_SIDE; j++) {
-        if (gameState[i][j] == color + symbol) {
+        if (
+          gameState[i][j] == color + symbol ||
+          gameState[i][j] == color + symbol + "u"
+        ) {
           x = i;
           y = j;
           location = [x, y];
@@ -107,6 +104,7 @@ const formatPiece = (
       }
     }
   }
+
   moveset.forEach((element) => {
     if (symbol.slice(0, 1) == element.symbol) {
       set = element.moveset;
@@ -119,7 +117,8 @@ const formatPiece = (
   return { symbol, color, location, set, moveType, moves };
 };
 
-const getGameState = (incomingState) => {
+// formats 2D gameState array
+const formatGameState = (incomingState) => {
   const gs = String(incomingState).split(",");
   const gameStateTwoD = [];
 
@@ -136,7 +135,7 @@ router.get(
     const SQUARES_PER_SIDE = 8;
     gameStatus = req.params.gameStatus;
     isUserWhite = req.params.isUserWhite == "true" ? true : false;
-    getGameState(req.params.gameState);
+    formatGameState(req.params.gameState);
     x = Number(req.params.x);
     y = Number(req.params.y);
 
@@ -149,7 +148,7 @@ router.get(
 router.get(
   "/check/gameState/:gameState/gameStatus/:gameStatus/gameMove/:gameMove/piece/:piece/isUserWhite/:isUserWhite/",
   (req, res) => {
-    getGameState(req.params.gameState);
+    formatGameState(req.params.gameState);
     gameStatus = req.params.gameStatus;
     const incomingMove = JSON.parse(req.params.gameMove);
     // let isUserWhite = req.params.isUserWhite;
@@ -166,7 +165,7 @@ router.get(
       const kingUnderDuress = formatPiece(
         (pieceColor == "w" ? "b" : "w") + "k"
       );
-      console.log("aggressor: ", aggressor);
+      // console.log("aggressor: ", aggressor);
       // console.log("kingUnderDuress: ", kingUnderDuress);
       const pathToKing = getPathToKing(
         kingUnderDuress.location,
@@ -220,10 +219,25 @@ const attemptToNeutralizeThreat = (
   return availableMoves;
 };
 
+const getKing = (color) => {
+  for (let i = 0; i < SQUARES_PER_SIDE; i++) {
+    for (let j = 0; j < SQUARES_PER_SIDE; j++) {
+      // console.log(gameState[i][j].slice(1));
+      if (
+        gameState[i][j].slice(0, 1) == color &&
+        gameState[i][j].slice(1, 2) == "k"
+      ) {
+        return formatPiece(gameState[i][j]);
+      }
+    }
+  }
+};
+
 const checkForCheck = (piece, x, y) => {
   const formattedPiece = formatPiece(piece);
   let kingColor = formattedPiece.color == "w" ? "b" : "w";
-  let king = formatPiece(kingColor + "k", true);
+  const king = getKing(kingColor);
+  // console.log(king);
 
   const CHECK = checkForThreat(king.location, kingColor);
   // console.log("inside format piece with piece: ", formattedPiece);
@@ -434,10 +448,29 @@ const nonextenderLogic = (piece, thisMoveset) => {
     }
   });
 };
+const checkCastle = (piece, thisMoveset) => {
+  // check if king has not been moved
+  let king = getKing(piece.color);
+  // if unmoved, proceed to check for threat conditions
+  if (king.symbol.length == 2) {
+    // console.log("proceed to check for threat conditions", gameState);
+    if (
+      (piece.x == 7 &&
+        gameState[6][piece.y] == "e" &&
+        gameState[5][piece.y] == "e") ||
+      (piece.x == 0 &&
+        gameState[1][piece.y] == "e" &&
+        gameState[2][piece.y] == "e" &&
+        gameState[3][piece.y] == "e")
+    ) {
+    }
+  }
+};
 
 const extenderLogic = (piece, thisMoveset) => {
-  if (piece.symbol == "r") {
-    // checkCastle()
+  // if rook has not been moved, check if castling is a valid move
+  if (piece.symbol.slice(0, 1) == "r" && piece.symbol.length == 2) {
+    checkCastle(piece, thisMoveset);
   }
   piece.set.forEach((element) => {
     let pathIsClear = true;
@@ -515,7 +548,7 @@ const extenderLogic = (piece, thisMoveset) => {
 //     console.log("isUserwhite going into check: ", isUserWhite);
 //     const SQUARES_PER_SIDE = 8;
 //
-//     getGameState(req.params.gameState);
+//     formatGameState(req.params.gameState);
 
 //     moveset.forEach((element) => {
 //       // GET AGGRESSOR MOVESET TO SEE IF MOVE IS CHECK

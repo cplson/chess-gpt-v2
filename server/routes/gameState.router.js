@@ -17,11 +17,11 @@ const gameState =
   [
     ["wrq", "e", "wp", "e", "e", "e", "bp", "brq"],
     ["e", "e", "e", "e", "br", "e", "e", "e"],
-    ["wb", "e", "e", "e", "e", "e", "e", "e"],
-    ["e", "e", "e", "e", "e", "e", "e", "bq"],
-    ["wk", "e", "e", "e", "e", "e", "e", "bk"],
+    ["wb", "e", "e", "e", "e", "bq", "e", "e"],
+    ["e", "e", "e", "e", "e", "e", "e", "e"],
+    ["wku", "e", "e", "e", "e", "e", "e", "bku"],
     ["e", "e", "e", "bp", "e", "e", "e", "e"],
-    ["e", "wp", "wq", "e", "e", "e", "e", "bn"],
+    ["e", "wp", "wq", "e", "bn", "e", "e", "e"],
     ["wrk", "wp", "e", "e", "e", "e", "e", "brk"],
   ];
 
@@ -30,11 +30,20 @@ router.use(express.json());
 router.post("/", (req, res) => {
   gameStatus = req.body.gameStatus;
 
-  // the first time a rook is moved, remove its q/k specification
+  // the first time a rook is moved, remove its q/k specification,
+  // this specifation needs to be tracked to check if castling is a valid move
   if (
     (req.body.fromX == 0 || req.body.fromX == 7) &&
     (req.body.fromY == 0 || req.body.fromY == 7)
   ) {
+    gameState[req.body.fromX][req.body.fromY] = gameState[req.body.fromX][
+      req.body.fromY
+    ].slice(0, 2);
+  }
+
+  // the first time a king is moved remove is unmoved ('u') specification,
+  // this specifation needs to be tracked to check if castling is a valid move
+  if (req.body.fromX == 4 && (req.body.fromY == 0 || req.body.fromY == 7)) {
     gameState[req.body.fromX][req.body.fromY] = gameState[req.body.fromX][
       req.body.fromY
     ].slice(0, 2);
@@ -55,7 +64,6 @@ router.post("/", (req, res) => {
 
   gameState[moveLocation[0]][moveLocation[1]] = piece;
   gameState[selectedPiece[0]][selectedPiece[1]] = "e";
-  console.log(gameState);
 
   res.sendStatus(201);
 });
