@@ -78,9 +78,9 @@ const addEventListeners = async () => {
         });
       btn.disabled = true;
       btn.style.opacity = "0";
-      selectedPiece = {};
-      cachedPieceMoves = [];
     });
+    selectedPiece = {};
+    cachedPieceMoves = [];
   });
 };
 
