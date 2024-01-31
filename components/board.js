@@ -82,9 +82,6 @@ const drawBoard = () => {
         Object.keys(selectedPiece).length != 0 &&
         selectedPiece.moveset.find((square) => square[0] == j && square[1] == i)
       ) {
-        // if(selectedPiece.moveset[1] == 'O-O'){
-
-        // }
         push();
         fill("#58A4B0");
         square(j * squareSideLength, i * squareSideLength, squareSideLength);
@@ -192,6 +189,7 @@ const move = async (fromX, fromY, toX, toY) => {
             const nextMoveset = await axios.get(
               `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/gameMove/${gameMove}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}`
             );
+            // console.log("nextMoveset is", nextMoveset.data);
           });
 
         selectedPiece = {};

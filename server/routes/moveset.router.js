@@ -471,60 +471,34 @@ const checkCastle = (piece, thisMoveset) => {
       let threat = false;
 
       // console.log(king.location, piece.color);
-      if (!checkForThreat(king.location, piece.color)) {
-        if (piece.x == 0) {
-          if (
-            !checkForThreat(
-              [[king.location[0] - 1], [king.location[1]]],
-              piece.color
-            ) &&
-            !checkForThreat(
-              [[king.location[0] - 2], [king.location[1]]],
-              piece.color
-            )
-          ) {
-            thisMoveset.push("O-O-O");
-          }
-        }
-        if (piece.x == 7) {
-          if (
-            !checkForThreat(
-              [[king.location[0] + 1], [king.location[1]]],
-              piece.color
-            ) &&
-            !checkForThreat(
-              [[king.location[0] + 2], [king.location[1]]],
-              piece.color
-            )
-          ) {
-            thisMoveset.push("O-O");
-          }
-        }
-        // if (
-        //   piece.x == 0 &&
 
-        // ) {
-        //   threat = true;
-        // } else {
-        //   thisMoveset.push("O-O-O");
-        // }
-        // if (
-        //   piece.x == 7 &&
-        //   (checkForThreat(
-        //     [[king.location[0] + 1], [king.location[1]]],
-        //     piece.color
-        //   ) ||
-        //     checkForThreat(
-        //       [[king.location[0] + 2], [king.location[1]]],
-        //       piece.color
-        //     ))
-        // ) {
-        //   threat = true;
-        // } else {
-        //   thisMoveset.push("O-O");
-        // }
-        console.log("moveset: ", thisMoveset);
+      threat = checkForThreat(king.location, piece.color);
+      if (
+        (piece.x == 0 &&
+          checkForThreat(
+            [[king.location[0] - 1], [king.location[1]]],
+            piece.color
+          )) ||
+        checkForThreat(
+          [[king.location[0] - 2], [king.location[1]]],
+          piece.color
+        )
+      ) {
+        threat = true;
+      } else if (
+        (piece.x == 7 &&
+          checkForThreat(
+            [[king.location[0] + 1], [king.location[1]]],
+            piece.color
+          )) ||
+        checkForThreat(
+          [[king.location[0] + 2], [king.location[1]]],
+          piece.color
+        )
+      ) {
+        threat = true;
       }
+      console.log("threat after all threat checks", threat);
     }
   }
 };
