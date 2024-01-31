@@ -19,24 +19,346 @@
     <title>Chess-GPT</title>
   </head>
   <body>
-    <div class="castle-btn-group">
-      <button class="queenside white-castle castle-btn">
-        <img class="castle-img" src="./assets/castling.svg" alt="castle" />
-      </button>
-      <button class="kingside white-castle castle-btn">
-        <img class="castle-img" src="./assets/castling.svg" alt="castle" />
-      </button>
-    </div>
     <div id="chess-container"></div>
-    <div class="castle-btn-group">
-      <button class="queenside black-castle castle-btn">
-        <img class="castle-img" src="./assets/castling.svg" alt="castle" />
-      </button>
-      <button class="kingside black-castle castle-btn">
-        <img class="castle-img" src="./assets/castling.svg" alt="castle" />
-      </button>
-    </div>
-
     <button id="route-tester">send Request</button>
+
+    <!-- <table id="chess-board">
+        <thead>
+          <tr>
+            <th class="column-header"></th>
+            <th class="column-header">A</th>
+            <th class="column-header">B</th>
+            <th class="column-header">C</th>
+            <th class="column-header">D</th>
+            <th class="column-header">E</th>
+            <th class="column-header">F</th>
+            <th class="column-header">G</th>
+            <th class="column-header">H</th>
+            <th class="column-header"></th>
+          </tr>
+        </thead>
+        <tbody id="chess-body">
+          <tr>
+            <th class="row-header">1</th>
+            <td class="black-square square">
+              <img
+                class="piece rook black"
+                src="./assets/Chess_rdt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece knight black"
+                src="./assets/Chess_ndt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece bishop black"
+                src="./assets/Chess_bdt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece queen black"
+                src="./assets/Chess_qdt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece king black"
+                src="./assets/Chess_kdt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece bishop black"
+                src="./assets/Chess_bdt45.svg"
+                alt="black bishop"
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece knight black"
+                src="./assets/Chess_ndt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece rook black"
+                src="./assets/Chess_rdt45.svg"
+                alt=""
+              />
+            </td>
+            <th class="row-header optional">1</th>
+          </tr>
+          <tr>
+            <th class="row-header">2</th>
+            <td class="white-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="black-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="white-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="black-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="white-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="black-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="white-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <td class="black-square square">
+              <div>
+                <img
+                  class="piece pawn black"
+                  src="./assets/Chess_pdt45.svg"
+                  alt="pawn"
+                />
+              </div>
+            </td>
+            <th class="row-header optional">2</th>
+          </tr>
+          <tr>
+            <th class="row-header">3</th>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <th class="row-header optional">3</th>
+          </tr>
+          <tr>
+            <th class="row-header">4</th>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <th class="row-header optional">4</th>
+          </tr>
+          <tr>
+            <th class="row-header">5</th>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <th class="row-header optional">5</th>
+          </tr>
+          <tr>
+            <th class="row-header">6</th>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <td class="white-square square"><div></div></td>
+            <td class="black-square square"><div></div></td>
+            <th class="row-header optional">6</th>
+          </tr>
+          <tr>
+            <th class="row-header">7</th>
+            <td class="black-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece pawn white"
+                src="./assets/Chess_plt45.svg"
+                alt="pawn"
+              />
+            </td>
+            <th class="row-header optional">7</th>
+          </tr>
+          <tr>
+            <th class="row-header">8</th>
+            <td class="white-square square">
+              <img
+                class="piece rook white"
+                src="./assets/Chess_rlt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece knight white"
+                src="./assets/Chess_nlt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece bishop white"
+                src="./assets/Chess_blt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece king white"
+                src="./assets/Chess_klt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece queen white"
+                src="./assets/Chess_qlt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece bishop white"
+                src="./assets/Chess_blt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="white-square square">
+              <img
+                class="piece knight white"
+                src="./assets/Chess_nlt45.svg"
+                alt=""
+              />
+            </td>
+            <td class="black-square square">
+              <img
+                class="piece rook white"
+                src="./assets/Chess_rlt45.svg"
+                alt=""
+              />
+            </td>
+            <th class="row-header optional">8</th>
+          </tr>
+        </tbody>
+        <tfoot>
+          <th class="column-header optional"></th>
+          <th class="column-header optional">A</th>
+          <th class="column-header optional">B</th>
+          <th class="column-header optional">C</th>
+          <th class="column-header optional">D</th>
+          <th class="column-header optional">E</th>
+          <th class="column-header optional">F</th>
+          <th class="column-header optional">G</th>
+          <th class="column-header optional">H</th>
+          <th class="column-header optional"></th>
+        </tfoot>
+      </table>
+    </div>
+    <div>
+      <button id="new-game-button">New Game</button>-->
+    <!-- </div> -->
   </body>
 </html>

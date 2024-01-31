@@ -2,7 +2,7 @@ const MAX_LENGTH = 620;
 const SQUARES_PER_SIDE = 8;
 const MAX_SIDE_LENGTH = MAX_LENGTH / SQUARES_PER_SIDE;
 const STARTING_PIECE_COUNT = 32;
-const userIsWhite = false;
+const userIsWhite = true;
 let gameMove;
 let isUserPiece;
 let boardSideLength, squareSideLength, isMaxLength, pieces, positions;
@@ -40,50 +40,13 @@ async function setup() {
     ...pieces.pieces.queen.locations,
     ...pieces.pieces.king.locations,
   ];
-  // document
-  //   .getElementById("route-tester")
-  //   .addEventListener("click", async () => {
-  //     const status = await move();
-  //     console.log(status);
-  //   });
-  addEventListeners();
-}
-
-const addEventListeners = async () => {
-  const castleBtns = document.getElementsByClassName("castle-btn");
-
-  castleBtns.forEach((btn) => {
-    const castleMove = {
-      color: userIsWhite,
-      side: "kingside",
-    };
-    if (btn.classList.contains("queenside")) {
-      castleMove.side = "queenside";
-    }
-    btn.addEventListener("click", async () => {
-      const response = axios
-        .post("http://localhost:5000/api/gameState/castle", {
-          move: castleMove,
-          gameStatus: gameStatus,
-          gameMoves: gameMove,
-        })
-        .then(() => {
-          const response = axios
-            .get("http://localhost:5000/api/gameState")
-            .then((res) => {
-              gameState = res.data.gameState;
-
-              console.log("inside then", gameState);
-            });
-        });
-      btn.disabled = true;
-      btn.style.opacity = "0";
+  document
+    .getElementById("route-tester")
+    .addEventListener("click", async () => {
+      const status = await move();
+      console.log(status);
     });
-    selectedPiece = {};
-    cachedPieceMoves = [];
-  });
-};
-
+}
 function draw() {
   drawBoard();
 }
@@ -140,38 +103,6 @@ const drawBoard = () => {
           i
         );
       }
-    }
-  }
-};
-
-const checkForCastle = () => {
-  if (userIsWhite) {
-    if (selectedPiece.moveset.includes("O-O")) {
-      const castleBtn = document.getElementsByClassName(
-        "kingside white-castle"
-      );
-      castleBtn[0].style.opacity = "1";
-      castleBtn[0].disabled = false;
-    } else if (selectedPiece.moveset.includes("O-O-O")) {
-      const castleBtn = document.getElementsByClassName(
-        "queenside white-castle"
-      );
-      castleBtn[0].style.opacity = "1";
-      castleBtn[0].disabled = false;
-    }
-  } else {
-    if (selectedPiece.moveset.includes("O-O")) {
-      const castleBtn = document.getElementsByClassName(
-        "kingside black-castle"
-      );
-      castleBtn[0].style.opacity = "1";
-      castleBtn[0].disabled = false;
-    } else if (selectedPiece.moveset.includes("O-O-O")) {
-      const castleBtn = document.getElementsByClassName(
-        "queenside black-castle"
-      );
-      castleBtn[0].style.opacity = "1";
-      castleBtn[0].disabled = false;
     }
   }
 };
@@ -257,7 +188,7 @@ const move = async (fromX, fromY, toX, toY) => {
             gameState = res.data.gameState;
             gameStatus = res.data.gameStatus;
             gameMove = JSON.stringify(res.data.gameMoves);
-            // console.log("gameMove is: ", gameMove);
+            console.log("gameMove is: ", gameMove);
             const nextMoveset = await axios.get(
               `http://localhost:5000/api/moveset/check/gameState/${gameState}/gameStatus/${gameStatus}/gameMove/${gameMove}/piece/${gameState[toX][toY]}/isUserWhite/${userIsWhite}`
             );
@@ -324,11 +255,6 @@ async function mousePressed() {
     mouseY > 0 &&
     mouseY < squareSideLength * SQUARES_PER_SIDE
   ) {
-    const castleBtns = document.getElementsByClassName("castle-btn");
-    castleBtns.forEach((btn) => {
-      btn.style.opacity = "0";
-      btn.disabled = true;
-    });
     isUserPiece =
       (userIsWhite &&
         gameState[floor(mouseX / squareSideLength)][
@@ -391,7 +317,6 @@ async function mousePressed() {
       }
     }
   }
-  console.log(checkForCastle());
 }
 
 // const highlightMoveset = (piece) => {
