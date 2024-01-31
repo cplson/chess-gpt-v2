@@ -17,12 +17,12 @@ const gameState =
   [
     ["wrq", "e", "wp", "e", "e", "e", "bp", "brq"],
     ["e", "e", "e", "e", "br", "e", "e", "e"],
-    ["wb", "e", "e", "e", "e", "e", "e", "e"],
-    ["e", "e", "e", "e", "e", "bq", "e", "e"],
+    ["e", "e", "e", "e", "e", "e", "e", "e"],
+    ["e", "e", "e", "e", "e", "e", "e", "e"],
     ["wku", "e", "e", "e", "e", "e", "e", "bku"],
     ["e", "e", "e", "bp", "e", "e", "e", "e"],
     ["e", "wp", "e", "e", "bn", "e", "e", "e"],
-    ["wrk", "wp", "e", "e", "e", "wq", "e", "brk"],
+    ["wrk", "wp", "e", "e", "e", "e", "e", "brk"],
   ];
 
 router.use(express.json());
@@ -64,6 +64,39 @@ router.post("/", (req, res) => {
 
   gameState[moveLocation[0]][moveLocation[1]] = piece;
   gameState[selectedPiece[0]][selectedPiece[1]] = "e";
+
+  res.sendStatus(201);
+});
+
+router.post("/castle", (req, res) => {
+  const move = req.body.move;
+  console.log("inside /castle", move);
+
+  if (move.color == true) {
+    if (move.side == "kingside") {
+      gameState[7][0] = "e";
+      gameState[5][0] = "wr";
+      gameState[4][0] = "e";
+      gameState[6][0] = "wk";
+    } else {
+      gameState[0][0] = "e";
+      gameState[3][0] = "wr";
+      gameState[4][0] = "e";
+      gameState[2][0] = "wk";
+    }
+  } else {
+    if (move.side == "kingside") {
+      gameState[7][7] = "e";
+      gameState[5][7] = "br";
+      gameState[4][7] = "e";
+      gameState[6][7] = "bk";
+    } else {
+      gameState[0][7] = "e";
+      gameState[3][7] = "br";
+      gameState[4][7] = "e";
+      gameState[2][7] = "bk";
+    }
+  }
 
   res.sendStatus(201);
 });

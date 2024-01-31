@@ -203,7 +203,7 @@ const attemptToNeutralizeThreat = (
   aggressorY
 ) => {
   const teamPieces = getTeamPieces(color);
-  console.log(teamPieces);
+  // console.log(teamPieces);
   const availableMoves = [];
 
   // console.log(
@@ -523,7 +523,7 @@ const checkCastle = (piece, thisMoveset) => {
         // } else {
         //   thisMoveset.push("O-O");
         // }
-        console.log("moveset: ", thisMoveset);
+        // console.log("moveset: ", thisMoveset);
       }
     }
   }

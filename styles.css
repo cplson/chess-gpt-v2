@@ -96,15 +96,34 @@ th {
 
 body {
   width: 100%;
+  margin-top: 64px;
 }
 #chess-container {
   width: 100%;
   /* max-width: 620px; */
-  margin: auto;
+  margin: 32px auto;
   height: auto;
-  margin-top: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   /* background-color: aquamarine; */
+}
+
+.castle-btn-group {
+  width: 80%;
+  max-width: 620px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.castle-btn {
+  width: 56px;
+  border-radius: 100%;
+  border: solid black 2px;
+  opacity: 0;
+}
+
+.castle-img {
+  padding: 10px 12px;
 }
