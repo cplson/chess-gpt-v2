@@ -40,13 +40,51 @@ async function setup() {
     ...pieces.pieces.queen.locations,
     ...pieces.pieces.king.locations,
   ];
-  document
-    .getElementById("route-tester")
-    .addEventListener("click", async () => {
-      const status = await move();
-      console.log(status);
-    });
+
+  // document
+  //   .getElementById("route-tester")
+  //   .addEventListener("click", async () => {
+  //     const status = await move();
+  //     console.log(status);
+  //   });
+  addEventListeners();
 }
+
+const addEventListeners = async () => {
+  const castleBtns = document.getElementsByClassName("castle-btn");
+
+  castleBtns.forEach((btn) => {
+    const castleMove = {
+      color: userIsWhite,
+      side: "kingside",
+    };
+    if (btn.classList.contains("queenside")) {
+      castleMove.side = "queenside";
+    }
+    btn.addEventListener("click", async () => {
+      const response = axios
+        .post("http://localhost:5000/api/gameState/castle", {
+          move: castleMove,
+          gameStatus: gameStatus,
+          gameMoves: gameMove,
+        })
+        .then(() => {
+          const response = axios
+            .get("http://localhost:5000/api/gameState")
+            .then((res) => {
+              gameState = res.data.gameState;
+
+              console.log("inside then", gameState);
+            });
+        });
+      btn.disabled = true;
+      btn.style.opacity = "0";
+    });
+    selectedPiece = {};
+    cachedPieceMoves = [];
+  });
+};
+
 function draw() {
   drawBoard();
 }
